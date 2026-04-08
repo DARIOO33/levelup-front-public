@@ -174,4 +174,10 @@ export const contactApi = {
   delete:   (id)   => api.delete(`/contact/${id}`),
 };
 
+export const subscriberApi = {
+  subscribe:  (email)      => api.post('/subscriber', { email }),
+  verifyOtp:  (email, otp) => api.post('/subscriber/verify-otp', { email, otp }),
+  getAll:     ()           => api.get('/subscriber'),
+};
+
 export default api;

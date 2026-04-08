@@ -728,11 +728,12 @@ export default function AdminPage() {
               {audience && (
                 <div className="mb-8 space-y-3">
                   {/* Top row — totals */}
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {[
-                      { label: 'Total Reach',      value: audience.totalCount,      color: '#22c55e' },
-                      { label: 'Registered Users', value: audience.registeredCount, color: '#7c3aff' },
-                      { label: 'Guest Customers',  value: audience.guestCount,      color: '#3b82f6' },
+                      { label: 'Total Reach',      value: audience.totalCount,       color: '#22c55e' },
+                      { label: 'Registered Users', value: audience.registeredCount,  color: '#7c3aff' },
+                      { label: 'Guest Customers',  value: audience.guestCount,       color: '#3b82f6' },
+                      { label: 'Subscribers',      value: audience.subscriberCount,  color: '#ec4899' },
                     ].map(({ label, value, color }) => (
                       <div key={label} className="card-glass p-4">
                         <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>{label}</p>
@@ -805,6 +806,7 @@ export default function AdminPage() {
                       { value: 'all',          label: `Everyone`,                                              count: audience?.totalCount          },
                       { value: 'registered',   label: `All registered`,                                        count: audience?.registeredCount     },
                       { value: 'guests',       label: `Guests only`,                                           count: audience?.guestCount          },
+                      { value: 'subscribers',  label: `Subscribers only`,                                      count: audience?.subscriberCount     },
                       { value: 'no_orders',    label: `No orders yet`,                                         count: audience?.noOrdersCount       },
                       { value: 'single_order', label: `Single order`,                                          count: audience?.singleOrderCount    },
                       { value: 'returning',    label: `2–4 orders`,                                            count: audience?.returningCount      },
