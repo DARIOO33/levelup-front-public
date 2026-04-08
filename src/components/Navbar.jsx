@@ -124,6 +124,51 @@ function MegaMenu({ type, onClose }) {
   );
 }
 
+// ── Mobile Accordion Section ──────────────────────────────────────────────────
+function MobileAccordion({ icon: Icon, label, children }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded text-sm font-medium transition-colors"
+        style={{ color: 'var(--text-primary)' }}
+        onMouseEnter={e => e.currentTarget.style.background = 'rgba(124,58,255,0.06)'}
+        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+      >
+        <div className="flex items-center gap-2">
+          <Icon size={15} className="text-purple-400" />
+          <span>{label}</span>
+        </div>
+        <ChevronDown
+          size={14}
+          style={{
+            color: 'var(--text-muted)',
+            transition: 'transform 0.2s',
+            transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+          }}
+        />
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="pl-4 py-1 space-y-0.5">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 export default function Navbar() {
   const { t, i18n } = useTranslation();
@@ -135,7 +180,7 @@ export default function Navbar() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [megaMenu, setMegaMenu] = useState(null); // null | 'iems' | 'accessories'
+  const [megaMenu, setMegaMenu] = useState(null);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -154,7 +199,6 @@ export default function Navbar() {
   }, []);
   useEffect(() => { setMobileOpen(false); setDropdownOpen(false); setMegaMenu(null); }, [pathname]);
 
-  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setDropdownOpen(false);
@@ -198,7 +242,7 @@ export default function Navbar() {
           <Image
             src={!dark ? `/logo.png` : `/logodark.png`}
             alt="Level Up Logo"
-            width={180}   // adjust size here
+            width={180}
             height={40}
             priority
             className="object-contain"
@@ -207,8 +251,6 @@ export default function Navbar() {
 
         {/* ── Desktop navigation ── */}
         <div ref={megaRef} className="hidden md:flex items-center gap-1 relative">
-
-          {/* Plain links */}
           {plainLinks.map(({ href, label }) => (
             <Link key={href} href={href}
               className="px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-200 relative group rounded"
@@ -220,7 +262,6 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {/* IEMs mega trigger */}
           <button
             onClick={() => setMegaMenu(m => m === 'iems' ? null : 'iems')}
             className="px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-200 flex items-center gap-1 rounded"
@@ -229,7 +270,6 @@ export default function Navbar() {
             <ChevronDown size={12} style={{ transition: 'transform .2s', transform: megaMenu === 'iems' ? 'rotate(180deg)' : 'rotate(0)' }} />
           </button>
 
-          {/* Accessories mega trigger */}
           <button
             onClick={() => setMegaMenu(m => m === 'accessories' ? null : 'accessories')}
             className="px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-200 flex items-center gap-1 rounded"
@@ -238,7 +278,6 @@ export default function Navbar() {
             <ChevronDown size={12} style={{ transition: 'transform .2s', transform: megaMenu === 'accessories' ? 'rotate(180deg)' : 'rotate(0)' }} />
           </button>
 
-          {/* Mega menu panels */}
           <AnimatePresence>
             {megaMenu && <MegaMenu type={megaMenu} onClose={() => setMegaMenu(null)} />}
           </AnimatePresence>
@@ -246,8 +285,6 @@ export default function Navbar() {
 
         {/* ── Right actions ── */}
         <div className="flex items-center gap-1">
-
-          {/* Language */}
           <button onClick={toggleLang}
             className="hidden md:flex items-center gap-1 px-2 py-1.5 text-xs font-mono rounded transition-colors hover:text-purple-400"
             style={{ color: 'var(--text-muted)' }}>
@@ -255,7 +292,6 @@ export default function Navbar() {
             <span suppressHydrationWarning>{mounted ? i18n.language?.toUpperCase() : 'EN'}</span>
           </button>
 
-          {/* Theme */}
           {mounted && (
             <button onClick={() => setTheme(dark ? 'light' : 'dark')}
               className="p-2 rounded transition-colors hover:text-purple-500"
@@ -264,7 +300,6 @@ export default function Navbar() {
             </button>
           )}
 
-          {/* Cart */}
           <Link href="/cart" className="relative p-2 rounded transition-colors hover:text-purple-500" style={{ color: 'var(--text-secondary)' }}>
             <ShoppingBag size={18} />
             {cartCount > 0 && (
@@ -274,7 +309,6 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* User dropdown (desktop) */}
           {mounted && (
             <>
               {user ? (
@@ -298,7 +332,6 @@ export default function Navbar() {
                         className="absolute right-0 mt-2 w-56 card-glass overflow-hidden"
                         style={{ border: '1px solid var(--border)', borderTop: '2px solid var(--purple)', boxShadow: '0 12px 32px rgba(0,0,0,0.25)' }}>
 
-                        {/* Header */}
                         <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
                           <div className="flex items-center gap-3">
                             <Avatar user={user} size={36} />
@@ -344,7 +377,6 @@ export default function Navbar() {
             </>
           )}
 
-          {/* Mobile hamburger */}
           <button className="md:hidden p-2 ml-1" style={{ color: 'var(--text-primary)' }} onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -378,17 +410,15 @@ export default function Navbar() {
                 <MobileItem key={href} href={href} label={t(`nav.${label.toLowerCase()}`)} />
               ))}
 
-              {/* IEMs section */}
-              <MobileSectionHeader icon={Headphones} label="IEMs" />
-              <div className="pl-4 space-y-0.5">
+              {/* IEMs accordion */}
+              <MobileAccordion icon={Headphones} label="IEMs">
                 {IEM_BRANDS.map(b => <MobileItem key={b.href} href={b.href} label={b.label} sub />)}
-              </div>
+              </MobileAccordion>
 
-              {/* Accessories section */}
-              <MobileSectionHeader icon={Package} label="Accessories" />
-              <div className="pl-4 space-y-0.5">
+              {/* Accessories accordion */}
+              <MobileAccordion icon={Package} label="Accessories">
                 {ACCESSORY_LINKS.map(a => <MobileItem key={a.href} href={a.href} label={`${a.icon} ${a.label}`} sub />)}
-              </div>
+              </MobileAccordion>
 
               <div className="border-t my-2" style={{ borderColor: 'var(--border)' }} />
 
@@ -460,14 +490,5 @@ function MobileItem({ href, label, icon: Icon, accent, sub }) {
       {Icon && <Icon size={14} />}
       {label}
     </Link>
-  );
-}
-
-function MobileSectionHeader({ icon: Icon, label }) {
-  return (
-    <div className="flex items-center gap-2 px-3 pt-3 pb-1">
-      <Icon size={13} className="text-purple-400" />
-      <span className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>{label}</span>
-    </div>
   );
 }
