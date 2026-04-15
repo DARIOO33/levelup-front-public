@@ -11,9 +11,9 @@ export default function AboutPage() {
   const { t } = useTranslation();
 
   const stats = [
-    { value: '3+',   label: t('about.stat_years') },
-    { value: '20+',  label: t('about.stat_brands') },
-    { value: '500+', label: t('about.stat_happy')  },
+    { value: '1+',   label: t('about.stat_years') },
+    { value: '5+',  label: t('about.stat_brands') },
+    { value: '20+', label: t('about.stat_happy')  },
   ];
 
   const team = [
