@@ -10,8 +10,10 @@ import { ordersApi, couponApi } from '@/lib/api';
 import { useCartStore, useAuthStore } from '@/store';
 import toast from 'react-hot-toast';
 import { useEffect } from 'react';
+import Select from 'react-select';
 import { useMemo } from 'react';
 import GuestAccountBanner from '@/components/GuestAccountBanner';
+
 const Field = ({ label, error, children }) => (
   <div>
     <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{label}</label>
@@ -38,6 +40,47 @@ function OtpGrid({ otp, onChange, onKeyDown }) {
   );
 }
 
+// Custom styles for react-select
+const customSelectStyles = {
+  control: (base, state) => ({
+    ...base,
+    backgroundColor: 'var(--bg-tertiary)',
+    borderColor: state.isFocused ? 'var(--purple)' : 'var(--border)',
+    borderWidth: '1px',
+    borderRadius: '2px',
+    boxShadow: state.isFocused ? '0 0 0 2px rgba(124,58,255,0.1)' : 'none',
+    '&:hover': {
+      borderColor: 'var(--purple)',
+    },
+  }),
+  input: (base) => ({
+    ...base,
+    color: 'var(--text-primary)',
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: 'var(--text-primary)',
+  }),
+  menu: (base) => ({
+    ...base,
+    backgroundColor: 'var(--bg-secondary)',
+    border: '1px solid var(--border)',
+    borderRadius: '2px',
+  }),
+  option: (base, { isFocused, isSelected }) => ({
+    ...base,
+    backgroundColor: isSelected ? 'var(--purple)' : isFocused ? 'rgba(124,58,255,0.1)' : 'transparent',
+    color: isSelected ? 'white' : 'var(--text-primary)',
+    '&:active': {
+      backgroundColor: 'var(--purple)',
+    },
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: 'var(--text-muted)',
+  }),
+};
+
 export default function CheckoutPage() {
   const { t } = useTranslation();
   const { items, clear } = useCartStore();
@@ -45,61 +88,91 @@ export default function CheckoutPage() {
 
   const [form, setForm] = useState({ fullname: '', email: '', phone: '', address: '' });
 
-  const [city, setCity] = useState(null);
-  const [ville, setVille] = useState(null);
-  const [cityList, setCityList] = useState([]);
+  const [selectedGovernorate, setSelectedGovernorate] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [cityOptions, setCityOptions] = useState([]);
 
   const wilayatTunisie = [
-    "Tunis", "Ariana", "Ben Arous", "Manouba", "Nabeul", "Zaghouan",
-    "Bizerte", "Beja", "Jendouba", "Kef", "Siliana", "Sousse",
-    "Monastir", "Mahdia", "Sfax", "Kairouan", "Kasserine",
-    "Sidi Bouzid", "Gabes", "Medenine", "Tataouine",
-    "Gafsa", "Tozeur", "Kebili"
+    { value: "Tunis", label: "Tunis" },
+    { value: "Ariana", label: "Ariana" },
+    { value: "Ben Arous", label: "Ben Arous" },
+    { value: "Mannouba", label: "Mannouba" },
+    { value: "Nabeul", label: "Nabeul" },
+    { value: "Zaghouan", label: "Zaghouan" },
+    { value: "Bizerte", label: "Bizerte" },
+    { value: "Beja", label: "Beja" },
+    { value: "Jendouba", label: "Jendouba" },
+    { value: "Kef", label: "Kef" },
+    { value: "Siliana", label: "Siliana" },
+    { value: "Sousse", label: "Sousse" },
+    { value: "Monastir", label: "Monastir" },
+    { value: "Mahdia", label: "Mahdia" },
+    { value: "Sfax", label: "Sfax" },
+    { value: "Kairouan", label: "Kairouan" },
+    { value: "Kasserine", label: "Kasserine" },
+    { value: "Sidi Bouzid", label: "Sidi Bouzid" },
+    { value: "Gabes", label: "Gabes" },
+    { value: "Medenine", label: "Medenine" },
+    { value: "Tataouine", label: "Tataouine" },
+    { value: "Gafsa", label: "Gafsa" },
+    { value: "Tozeur", label: "Tozeur" },
+    { value: "Kebili", label: "Kebili" }
   ];
-  const handleCityChange = async (value) => {
-    setCity(value);
-    if (!value) {
-      setCityList([]);
+
+  const handleGovernorateChange = async (selectedOption) => {
+    setSelectedGovernorate(selectedOption);
+    setSelectedCity(null); // Reset city when governorate changes
+    
+    if (!selectedOption) {
+      setCityOptions([]);
       return;
     }
 
-    const res = await fetch(`/api/municipalities?name=${value}`);
+    const res = await fetch(`/api/municipalities?name=${selectedOption.value}`);
     const data = await res.json();
-    setCityList(data[0]?.Delegations || []);
-  };
-
-  const uniqueCities = useMemo(() => {
-    if (!Array.isArray(cityList)) return [];
+    
+    // Transform cities to react-select format with unique values
+    const cities = data[0]?.Delegations || [];
     const seen = new Set();
-
-    return cityList.filter((c) => {
+    const uniqueCities = cities.filter((c) => {
       const key = c.Name?.trim().toLowerCase();
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });
-  }, [cityList]);
+    
+    setCityOptions(uniqueCities.map(city => ({
+      value: city,
+      label: `${city.Name} ${city.PostalCode ? `(${city.PostalCode})` : ''}`
+    })));
+  };
+
+  const handleCityChange = (selectedOption) => {
+    setSelectedCity(selectedOption);
+  };
+
   // Pre-fill form with logged-in user data
   useEffect(() => {
     if (user) {
       setForm(f => ({
         ...f,
         fullname: f.fullname || user.name || '',
-        email: user.email || '',            // always use account email, not editable
+        email: user.email || '',
         phone: f.phone || user.phoneNumber || '',
       }));
     }
   }, [user]);
+  
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   // Guest OTP state
-  const [step, setStep] = useState('form');   // 'form' | 'otp' | 'success'
+  const [step, setStep] = useState('form');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [pendingEmail, setPendingEmail] = useState('');
   const [emailConflict, setEmailConflict] = useState(false);
   const [couponCode, setCouponCode] = useState('');
-  const [couponData, setCouponData] = useState(null);  // { code, type, value, discount }
+  const [couponData, setCouponData] = useState(null);
   const [couponLoading, setCouponLoading] = useState(false);
   const [couponError, setCouponError] = useState('');
 
@@ -111,6 +184,8 @@ export default function CheckoutPage() {
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = t('checkout.invalid_email');
     if (!form.phone.trim() || !/^\+?[0-9]{8,15}$/.test(form.phone)) e.phone = t('checkout.invalid_phone');
     if (!form.address.trim()) e.address = t('checkout.required');
+    if (!selectedGovernorate) e.governorate = t('checkout.required');
+    if (!selectedCity) e.city = t('checkout.required');
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -153,18 +228,21 @@ export default function CheckoutPage() {
     setLoading(true);
     try {
       const orderItems = items.map(i => ({ product: i.productId, variantID: i.variantId, quantity: i.quantity }));
-      const fullAddress = ville
-        ? `${form.address || ''} ${ville.Name} ${ville.PostalCode} ${city}`
+      const fullAddress = selectedCity
+        ? `${form.address || ''} ${selectedCity.value.Name} ${selectedCity.value.PostalCode || ''} ${selectedGovernorate.value}`
         : form.address;
-      const res = await ordersApi.create({ customer: { ...form, address: fullAddress, }, items: orderItems, ...(couponData ? { couponCode: couponData.code } : {}) });
+      
+      const res = await ordersApi.create({ 
+        customer: { ...form, address: fullAddress }, 
+        items: orderItems, 
+        ...(couponData ? { couponCode: couponData.code } : {}) 
+      });
 
       if (res.data.status === 'otp_required') {
-        // Guest user — need OTP verification
         setPendingEmail(form.email);
         setStep('otp');
         toast.success('Check your email for a verification code!');
       } else {
-        // Logged-in user — order created immediately
         clear();
         setStep('success');
       }
@@ -239,7 +317,6 @@ export default function CheckoutPage() {
                 </p>
               </div>
 
-              {/* Offer account creation to guests right after their order */}
               {!user && (
                 <div className="w-full max-w-md">
                   <GuestAccountBanner
@@ -314,7 +391,6 @@ export default function CheckoutPage() {
               <span className="tag mb-3 inline-flex">Secure Checkout</span>
               <h1 className="section-title mb-10">{t('checkout.title')}</h1>
 
-              {/* Guest notice + account creation offer */}
               {!user && (
                 <GuestAccountBanner
                   context="cart"
@@ -346,7 +422,6 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Field label={t('checkout.email')} error={errors.email}>
                       {user ? (
-                        /* Logged-in: email is locked to their account */
                         <div className="input-field flex items-center gap-2 cursor-not-allowed"
                           style={{ opacity: 0.75, background: 'var(--bg-secondary)' }}>
                           <span className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>{form.email}</span>
@@ -379,39 +454,39 @@ export default function CheckoutPage() {
                         onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+21612345678" />
                     </Field>
                   </div>
-                  {/* Gouvernorat */}
-                  <Field label={t('checkout.governorate')}>
-                    <select
-                      className="input-field"
-                      value={city || ''}
-                      onChange={(e) => handleCityChange(e.target.value)}
-                    >
-                      <option value="">Select</option>
-                      {wilayatTunisie.map((w) => (
-                        <option key={w} value={w}>{w}</option>
-                      ))}
-                    </select>
+                  
+                  {/* Governorate - Auto Complete */}
+                  <Field label={t('checkout.governorate')} error={errors.governorate}>
+                    <Select
+                      options={wilayatTunisie}
+                      value={selectedGovernorate}
+                      onChange={handleGovernorateChange}
+                      placeholder="Search or select governorate..."
+                      isClearable
+                      styles={customSelectStyles}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                    />
                   </Field>
 
-                  {/* Ville */}
-                  <Field label={t('checkout.city')}>
-                    <select
-                      className="input-field"
-                      value={ville?.Name || ''}
-                      onChange={(e) => {
-                        const selected = uniqueCities.find(c => c.Name === e.target.value);
-                        setVille(selected);
-                      }}
-                    >
-                      <option value="">Select city</option>
-                      {uniqueCities.map((v, i) => (
-                        <option key={i} value={v.Name}>{v.Name}</option>
-                      ))}
-                    </select>
+                  {/* City - Auto Complete */}
+                  <Field label={t('checkout.city')} error={errors.city}>
+                    <Select
+                      options={cityOptions}
+                      value={selectedCity}
+                      onChange={handleCityChange}
+                      placeholder={selectedGovernorate ? "Search or select city..." : "Select a governorate first"}
+                      isClearable
+                      isDisabled={!selectedGovernorate}
+                      styles={customSelectStyles}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      noOptionsMessage={() => selectedGovernorate ? "No cities found" : "Please select a governorate first"}
+                    />
                   </Field>
 
                   {/* Detailed address */}
-                  <Field label="Detailed Address">
+                  <Field label="Detailed Address" error={errors.address}>
                     <input
                       className="input-field"
                       value={form.address}
