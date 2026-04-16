@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,33 @@ export default function ProductCard({ product }) {
   const variant = product.variants?.[selectedVariant];
   const minPrice = Math.min(...(product.variants?.map((v) => v.price) || [0]));
   const inStock = product.variants?.some((v) => v.stock > 0);
+
+  // Auto-select the first in-stock variant when current selected variant is out of stock
+  useEffect(() => {
+    if (!product.variants?.length) return;
+    
+    const currentVariant = product.variants[selectedVariant];
+    // If current selected variant is out of stock, find the first in-stock variant
+    if (currentVariant && currentVariant.stock === 0) {
+      const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
+      if (firstInStockIndex !== -1 && firstInStockIndex !== selectedVariant) {
+        setSelectedVariant(firstInStockIndex);
+      }
+    }
+  }, [product.variants, selectedVariant]);
+
+  // Also auto-select first in-stock variant on initial load if the default (index 0) is out of stock
+  useEffect(() => {
+    if (!product.variants?.length) return;
+    
+    const firstVariant = product.variants[0];
+    if (firstVariant && firstVariant.stock === 0) {
+      const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
+      if (firstInStockIndex !== -1) {
+        setSelectedVariant(firstInStockIndex);
+      }
+    }
+  }, [product.variants]);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -86,9 +113,20 @@ export default function ProductCard({ product }) {
         {product.variants?.length > 1 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {product.variants.map((v, i) => (
-              <button key={v._id} onClick={() => setSelectedVariant(i)}
-                className="text-[10px] font-mono px-2 py-0.5 border transition-all duration-150"
-                style={{ borderRadius: '2px', borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)', color: i === selectedVariant ? 'var(--purple)' : 'var(--text-muted)', background: i === selectedVariant ? 'rgba(124,58,255,0.08)' : 'transparent' }}>
+              <button 
+                key={v._id} 
+                onClick={() => v.stock > 0 && setSelectedVariant(i)}
+                className="text-[10px] font-mono px-2 py-0.5 border transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+                style={{ 
+                  borderRadius: '2px', 
+                  borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)', 
+                  color: i === selectedVariant ? 'var(--purple)' : 'var(--text-muted)', 
+                  background: i === selectedVariant ? 'rgba(124,58,255,0.08)' : 'transparent',
+                  opacity: v.stock === 0 ? 0.4 : 1,
+                  cursor: v.stock === 0 ? 'not-allowed' : 'pointer'
+                }}
+                disabled={v.stock === 0}
+              >
                 {v.title}
               </button>
             ))}
