@@ -39,9 +39,39 @@ export default function ProductDetailPage() {
   // Load product
   useEffect(() => {
     productsApi.getOne(id)
-      .then(r => { setProduct(r.data.product); setLoading(false); })
+      .then(r => { 
+        setProduct(r.data.product); 
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [id]);
+
+  // Auto-select first in-stock variant when product loads
+  useEffect(() => {
+    if (!product?.variants?.length) return;
+    
+    const currentVariant = product.variants[selectedVariant];
+    // If current selected variant is out of stock, find first in-stock variant
+    if (currentVariant && currentVariant.stock === 0) {
+      const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
+      if (firstInStockIndex !== -1 && firstInStockIndex !== selectedVariant) {
+        setSelectedVariant(firstInStockIndex);
+      }
+    }
+  }, [product, selectedVariant]);
+
+  // Also handle initial load when product first loads
+  useEffect(() => {
+    if (!product?.variants?.length) return;
+    
+    const firstVariant = product.variants[0];
+    if (firstVariant && firstVariant.stock === 0) {
+      const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
+      if (firstInStockIndex !== -1) {
+        setSelectedVariant(firstInStockIndex);
+      }
+    }
+  }, [product]);
 
   // Load approved reviews for this product
   useEffect(() => {
@@ -243,14 +273,16 @@ export default function ProductDetailPage() {
               </p>
               <div className="flex flex-wrap gap-2">
                 {product.variants.map((v, i) => (
-                  <button key={v._id} onClick={() => setSelectedVariant(i)}
-                    className="px-4 py-2 text-sm font-mono border transition-all duration-200"
+                  <button 
+                    key={v._id} 
+                    onClick={() => v.stock > 0 && setSelectedVariant(i)}
+                    disabled={v.stock === 0}
+                    className="px-4 py-2 text-sm font-mono border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                     style={{
                       borderRadius: '2px',
                       borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)',
                       color: i === selectedVariant ? 'var(--purple)' : v.stock === 0 ? 'var(--text-muted)' : 'var(--text-secondary)',
                       background: i === selectedVariant ? 'rgba(124,58,255,0.08)' : 'transparent',
-                      opacity: v.stock === 0 && i !== selectedVariant ? 0.5 : 1,
                     }}>
                     {v.title}
                     {v.stock === 0 && <span className="ml-1 text-[10px]">· out</span>}
