@@ -43,7 +43,7 @@ export default function HomePage() {
   return (
     <div>
       {/* ── HERO ── */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden py-16">
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
         <div className="absolute inset-0 grid-bg opacity-[0.04]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none"
           style={{ background: 'radial-gradient(circle,rgba(124,58,255,0.15) 0%,transparent 70%)' }} />

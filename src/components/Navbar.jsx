@@ -236,6 +236,17 @@ export default function Navbar() {
         borderBottom: scrolled ? '1px solid var(--border)' : 'none',
       }}
     >
+      <div
+        className="top-0 left-0 right-0 z-[60] text-center text-xs font-mono py-1.5"
+        style={{
+          background: 'rgba(124,58,255,0.9)', // purple
+          color: 'white',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(255,255,255,0.1)',
+        }}
+      >
+        🚚 {t('nav.shipping')}
+      </div>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center flex-shrink-0">

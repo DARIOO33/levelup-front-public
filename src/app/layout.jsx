@@ -6,7 +6,6 @@ import Footer from '@/components/Footer';
 import I18nProvider from '@/components/I18nProvider';
 import AuthInit from '@/components/AuthInit';
 import './globals.css';
-
 const bebasNeue = Bebas_Neue({
   weight: '400',
   subsets: ['latin'],
