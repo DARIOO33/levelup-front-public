@@ -36,7 +36,14 @@ export default function HomePage() {
   const features = t('home.features', { returnObjects: true });
 
   useEffect(() => {
-    productsApi.getAll().then(r => setProducts(r.data.products?.slice(0, 4) || [])).catch(() => { });
+    productsApi
+      .getAll()
+      .then(r =>
+        setProducts(
+          r.data.products?.filter(p => p.featured === true) || []
+        )
+      )
+      .catch(() => { });
     reviewsApi.getApproved().then(r => setReviews(r.data.reviews?.slice(0, 6) || [])).catch(() => { });
   }, []);
 
