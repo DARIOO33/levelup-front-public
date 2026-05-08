@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
 
   // Build keyword-rich title: "KZ ZSN Pro X — Level Up TN"
   const titleSuffix = minPrice ? ` — ${minPrice} TND` : '';
-  const pageTitle = `${product.name}${titleSuffix} | Level Up TN`;
+  const pageTitle = `${product.name}${titleSuffix}`;
 
   // Rich description mentioning brand, price, and key specs
   const specSummary = product.specifications
