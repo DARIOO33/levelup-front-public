@@ -7,7 +7,7 @@
 import ProductDetailClient from './ProductDetailClient';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
-const API_URL  = process.env.NEXT_PUBLIC_API_URL  || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // Fetch product server-side (used by both generateMetadata and the page)
 async function fetchProduct(id) {
@@ -40,18 +40,18 @@ export async function generateMetadata({ params }) {
     : null;
 
   const inStock = product.variants?.some((v) => v.stock > 0);
-  const image   = product.images?.[0] ?? null;
+  const image = product.images?.[0] ?? null;
 
   // Build keyword-rich title: "KZ ZSN Pro X — Level Up TN"
   const titleSuffix = minPrice ? ` — ${minPrice} TND` : '';
-  const pageTitle   = `${product.name}${titleSuffix}`;
+  const pageTitle = `${product.name}${titleSuffix} | Level Up TN`;
 
   // Rich description mentioning brand, price, and key specs
   const specSummary = product.specifications
     ? Object.entries(product.specifications)
-        .slice(0, 3)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join(', ')
+      .slice(0, 3)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join(', ')
     : '';
 
   const description = [
@@ -108,11 +108,11 @@ export default async function ProductPage({ params }) {
   // Build JSON-LD Product schema for Google rich results & image search
   let productSchema = null;
   if (product) {
-    const minPrice  = product.variants?.length
+    const minPrice = product.variants?.length
       ? Math.min(...product.variants.map((v) => v.price))
       : null;
-    const inStock   = product.variants?.some((v) => v.stock > 0);
-    const image     = product.images?.[0] ?? null;
+    const inStock = product.variants?.some((v) => v.stock > 0);
+    const image = product.images?.[0] ?? null;
 
     productSchema = {
       '@context': 'https://schema.org',
@@ -128,32 +128,32 @@ export default async function ProductPage({ params }) {
       // Individual offers per variant
       offers: product.variants?.length
         ? {
-            '@type': 'AggregateOffer',
+          '@type': 'AggregateOffer',
+          priceCurrency: 'TND',
+          lowPrice: Math.min(...product.variants.map((v) => v.price)),
+          highPrice: Math.max(...product.variants.map((v) => v.price)),
+          offerCount: product.variants.length,
+          availability: inStock
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+          seller: {
+            '@type': 'Organization',
+            name: 'Level Up TN',
+            url: SITE_URL,
+          },
+          offers: product.variants.map((v) => ({
+            '@type': 'Offer',
+            name: v.title,
+            price: v.price,
             priceCurrency: 'TND',
-            lowPrice: Math.min(...product.variants.map((v) => v.price)),
-            highPrice: Math.max(...product.variants.map((v) => v.price)),
-            offerCount: product.variants.length,
-            availability: inStock
-              ? 'https://schema.org/InStock'
-              : 'https://schema.org/OutOfStock',
-            seller: {
-              '@type': 'Organization',
-              name: 'Level Up TN',
-              url: SITE_URL,
-            },
-            offers: product.variants.map((v) => ({
-              '@type': 'Offer',
-              name: v.title,
-              price: v.price,
-              priceCurrency: 'TND',
-              availability:
-                v.stock > 0
-                  ? 'https://schema.org/InStock'
-                  : 'https://schema.org/OutOfStock',
-              url: `${SITE_URL}/product/${id}`,
-              seller: { '@type': 'Organization', name: 'Level Up TN' },
-            })),
-          }
+            availability:
+              v.stock > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+            url: `${SITE_URL}/product/${id}`,
+            seller: { '@type': 'Organization', name: 'Level Up TN' },
+          })),
+        }
         : undefined,
       // Aggregate rating (filled in client-side via reviews, pre-populated if available)
       aggregateRating: undefined,
