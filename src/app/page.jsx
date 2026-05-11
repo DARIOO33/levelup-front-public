@@ -87,7 +87,7 @@ export default function HomePage() {
             {[
               { num: products.length || 12, suf: '+', label: t('hero.stat_products') },
               { num: 4, suf: '', label: t('hero.stat_drivers') },
-              { num: 200, suf: '+', label: t('hero.stat_reviews') },
+              { num: 10, suf: '+', label: t('hero.stat_reviews') },
             ].map(({ num, suf, label }) => (
               <div key={label} className="text-center">
                 <p className="font-display text-3xl md:text-4xl text-gradient"><AnimatedNumber target={num} suffix={suf} /></p>
