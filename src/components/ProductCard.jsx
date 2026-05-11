@@ -17,11 +17,11 @@ export default function ProductCard({ product }) {
   const variant = product.variants?.[selectedVariant];
   const minPrice = Math.min(...(product.variants?.map((v) => v.price) || [0]));
   const inStock = product.variants?.some((v) => v.stock > 0);
-
+  const totalStock = product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
   // Auto-select the first in-stock variant when current selected variant is out of stock
   useEffect(() => {
     if (!product.variants?.length) return;
-    
+
     const currentVariant = product.variants[selectedVariant];
     // If current selected variant is out of stock, find the first in-stock variant
     if (currentVariant && currentVariant.stock === 0) {
@@ -35,7 +35,7 @@ export default function ProductCard({ product }) {
   // Also auto-select first in-stock variant on initial load if the default (index 0) is out of stock
   useEffect(() => {
     if (!product.variants?.length) return;
-    
+
     const firstVariant = product.variants[0];
     if (firstVariant && firstVariant.stock === 0) {
       const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
@@ -127,14 +127,14 @@ export default function ProductCard({ product }) {
         {product.variants?.length > 1 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {product.variants.map((v, i) => (
-              <button 
-                key={v._id} 
+              <button
+                key={v._id}
                 onClick={() => v.stock > 0 && setSelectedVariant(i)}
                 className="text-[10px] font-mono px-2 py-0.5 border transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ 
-                  borderRadius: '2px', 
-                  borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)', 
-                  color: i === selectedVariant ? 'var(--purple)' : 'var(--text-muted)', 
+                style={{
+                  borderRadius: '2px',
+                  borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)',
+                  color: i === selectedVariant ? 'var(--purple)' : 'var(--text-muted)',
                   background: i === selectedVariant ? 'rgba(124,58,255,0.08)' : 'transparent',
                   opacity: v.stock === 0 ? 0.4 : 1,
                   cursor: v.stock === 0 ? 'not-allowed' : 'pointer'
@@ -152,8 +152,13 @@ export default function ProductCard({ product }) {
               {variant ? variant.price : minPrice} <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>TND</span>
             </span>
             {variant && (
-              <p className="text-[10px] font-mono mt-0.5" style={{ color: variant.stock > 0 ? '#22c55e' : '#ef4444' }}>
-                {variant.stock > 0 ? `${variant.stock} ${t('shop.stock')}` : t('shop.out_of_stock')}
+              <p
+                className="text-[10px] font-mono mt-0.5"
+                style={{ color: totalStock > 0 ? '#22c55e' : '#ef4444' }}
+              >
+                {totalStock > 0
+                  ? `${totalStock} ${t('shop.stock')}`
+                  : t('shop.out_of_stock')}
               </p>
             )}
           </div>

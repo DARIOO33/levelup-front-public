@@ -1,0 +1,1887 @@
+{
+  "app_metadata": {
+    "name": "EuroHospitality Multilingual Learning Platform",
+    "version": "2.0.0",
+    "created": "2026-05-08",
+    "languages": [
+      "english",
+      "croatian",
+      "german"
+    ],
+    "target_industries": [
+      "hotel",
+      "restaurant",
+      "bar",
+      "hospitality"
+    ],
+    "primary_regions": [
+      "Croatia",
+      "Germany",
+      "Central Europe"
+    ],
+    "cefr_levels": [
+      "A1",
+      "A2",
+      "B1",
+      "B2",
+      "C1"
+    ],
+    "total_entries": {
+      "vocabulary_items": 525,
+      "conversation_scenarios": 215,
+      "quizzes": 125,
+      "complaint_situations": 58,
+      "grammar_notes": 45,
+      "daily_challenges": 90,
+      "ai_simulation_personas": 12,
+      "workflows": 8
+    },
+    "estimated_total_learning_hours": 180,
+    "platform_compatibility": [
+      "react",
+      "nextjs",
+      "mongodb",
+      "firebase",
+      "react_native",
+      "flutter"
+    ]
+  },
+  "gamification": {
+    "xp_system": {
+      "vocabulary_mastery_xp": 25,
+      "conversation_completion_xp": 50,
+      "quiz_perfect_score_xp": 40,
+      "daily_challenge_xp": 75,
+      "complaint_resolution_xp": 60,
+      "streak_day_xp": 15,
+      "beginner_level_xp_threshold": 500,
+      "intermediate_level_xp_threshold": 2000,
+      "advanced_level_xp_threshold": 5000,
+      "expert_level_xp_threshold": 12000,
+      "master_level_xp_threshold": 25000
+    },
+    "levels": [
+      {
+        "level": 1,
+        "title": "Hospitality Trainee",
+        "xp_required": 0,
+        "badge_icon": "trainee_badge"
+      },
+      {
+        "level": 2,
+        "title": "Junior Host",
+        "xp_required": 500,
+        "badge_icon": "junior_host_badge"
+      },
+      {
+        "level": 3,
+        "title": "Service Professional",
+        "xp_required": 1200,
+        "badge_icon": "service_pro_badge"
+      },
+      {
+        "level": 4,
+        "title": "Senior Attendant",
+        "xp_required": 2500,
+        "badge_icon": "senior_attendant_badge"
+      },
+      {
+        "level": 5,
+        "title": "Hospitality Expert",
+        "xp_required": 5000,
+        "badge_icon": "expert_badge"
+      },
+      {
+        "level": 6,
+        "title": "Guest Relations Manager",
+        "xp_required": 8000,
+        "badge_icon": "manager_badge"
+      },
+      {
+        "level": 7,
+        "title": "Multilingual Maestro",
+        "xp_required": 12000,
+        "badge_icon": "maestro_badge"
+      },
+      {
+        "level": 8,
+        "title": "Hospitality Legend",
+        "xp_required": 20000,
+        "badge_icon": "legend_badge"
+      },
+      {
+        "level": 9,
+        "title": "EuroHospitality Ambassador",
+        "xp_required": 30000,
+        "badge_icon": "ambassador_badge"
+      },
+      {
+        "level": 10,
+        "title": "Grand Master of Service",
+        "xp_required": 50000,
+        "badge_icon": "grand_master_badge"
+      }
+    ],
+    "achievements": [
+      {
+        "id": "ach_001",
+        "name": "First Words",
+        "description": "Complete 10 vocabulary items",
+        "xp_reward": 100,
+        "icon": "first_words"
+      },
+      {
+        "id": "ach_002",
+        "name": "Polyglot Starter",
+        "description": "Learn 50 words in all 3 languages",
+        "xp_reward": 250,
+        "icon": "polyglot_starter"
+      },
+      {
+        "id": "ach_003",
+        "name": "Conversation Master",
+        "description": "Complete 25 conversation scenarios",
+        "xp_reward": 300,
+        "icon": "conversation_master"
+      },
+      {
+        "id": "ach_004",
+        "name": "Complaint Handler",
+        "description": "Successfully resolve 20 complaint scenarios",
+        "xp_reward": 400,
+        "icon": "complaint_handler"
+      },
+      {
+        "id": "ach_005",
+        "name": "7-Day Streak",
+        "description": "Maintain a 7-day learning streak",
+        "xp_reward": 150,
+        "icon": "week_streak"
+      },
+      {
+        "id": "ach_006",
+        "name": "30-Day Warrior",
+        "description": "30 consecutive days of learning",
+        "xp_reward": 500,
+        "icon": "month_warrior"
+      },
+      {
+        "id": "ach_007",
+        "name": "Perfect Quizzer",
+        "description": "Score 100% on 10 quizzes",
+        "xp_reward": 350,
+        "icon": "perfect_quizzer"
+      },
+      {
+        "id": "ach_008",
+        "name": "Emergency Ready",
+        "description": "Complete all emergency scenarios",
+        "xp_reward": 450,
+        "icon": "emergency_ready"
+      },
+      {
+        "id": "ach_009",
+        "name": "Bartender Extraordinaire",
+        "description": "Master all bar vocabulary",
+        "xp_reward": 200,
+        "icon": "bartender_extra"
+      },
+      {
+        "id": "ach_010",
+        "name": "Housekeeping Hero",
+        "description": "Complete all housekeeping modules",
+        "xp_reward": 200,
+        "icon": "housekeeping_hero"
+      },
+      {
+        "id": "ach_011",
+        "name": "Reception Pro",
+        "description": "Master hotel reception vocabulary",
+        "xp_reward": 250,
+        "icon": "reception_pro"
+      },
+      {
+        "id": "ach_012",
+        "name": "Cultural Bridge",
+        "description": "Complete all CEFR B1 content",
+        "xp_reward": 1000,
+        "icon": "cultural_bridge"
+      },
+      {
+        "id": "ach_013",
+        "name": "Speed Learner",
+        "description": "Complete 5 timed challenges under par time",
+        "xp_reward": 300,
+        "icon": "speed_learner"
+      },
+      {
+        "id": "ach_014",
+        "name": "AI Negotiator",
+        "description": "Successfully handle all AI customer personalities",
+        "xp_reward": 600,
+        "icon": "ai_negotiator"
+      },
+      {
+        "id": "ach_015",
+        "name": "Vocabulary Champion",
+        "description": "Learn all 525 vocabulary items",
+        "xp_reward": 2000,
+        "icon": "vocab_champion"
+      }
+    ],
+    "streak_rewards": [
+      {
+        "days": 3,
+        "xp_bonus": 30,
+        "title": "Warming Up"
+      },
+      {
+        "days": 7,
+        "xp_bonus": 75,
+        "title": "On Fire"
+      },
+      {
+        "days": 14,
+        "xp_bonus": 150,
+        "title": "Unstoppable"
+      },
+      {
+        "days": 30,
+        "xp_bonus": 400,
+        "title": "Momentum King"
+      },
+      {
+        "days": 60,
+        "xp_bonus": 1000,
+        "title": "Dedication Legend"
+      },
+      {
+        "days": 100,
+        "xp_bonus": 2500,
+        "title": "Centurion of Learning"
+      },
+      {
+        "days": 365,
+        "xp_bonus": 10000,
+        "title": "One Year Crown"
+      }
+    ],
+    "leaderboard_titles": [
+      {
+        "rank": 1,
+        "title": "Top Hospitality Linguist",
+        "color": "gold"
+      },
+      {
+        "rank": 2,
+        "title": "Service Language Expert",
+        "color": "silver"
+      },
+      {
+        "rank": 3,
+        "title": "Guest Communication Ace",
+        "color": "bronze"
+      },
+      {
+        "rank_range": [
+          4,
+          10
+        ],
+        "title": "Rising Star of Service"
+      },
+      {
+        "rank_range": [
+          11,
+          50
+        ],
+        "title": "Dedicated Learner"
+      },
+      {
+        "rank_range": [
+          51,
+          100
+        ],
+        "title": "Hospitality Enthusiast"
+      }
+    ]
+  },
+  "categories": [
+    {
+      "id": "cat_001",
+      "name": "restaurant_objects",
+      "icon": "restaurant_icon",
+      "description": "Essential restaurant items, utensils, and furniture",
+      "total_items": 60,
+      "cefr_level": "A1"
+    },
+    {
+      "id": "cat_002",
+      "name": "hotel_reception",
+      "icon": "reception_icon",
+      "description": "Hotel front desk vocabulary and phrases",
+      "total_items": 55,
+      "cefr_level": "A2"
+    },
+    {
+      "id": "cat_003",
+      "name": "bar",
+      "icon": "bar_icon",
+      "description": "Bar equipment, drinks, and service vocabulary",
+      "total_items": 50,
+      "cefr_level": "A2"
+    },
+    {
+      "id": "cat_004",
+      "name": "housekeeping",
+      "icon": "housekeeping_icon",
+      "description": "Cleaning supplies, procedures, and room items",
+      "total_items": 45,
+      "cefr_level": "A2"
+    },
+    {
+      "id": "cat_005",
+      "name": "food_and_drinks",
+      "icon": "food_drinks_icon",
+      "description": "Menu items, ingredients, and beverages",
+      "total_items": 70,
+      "cefr_level": "A1"
+    },
+    {
+      "id": "cat_006",
+      "name": "customer_service",
+      "icon": "customer_service_icon",
+      "description": "Professional service phrases and dialogue",
+      "total_items": 65,
+      "cefr_level": "B1"
+    },
+    {
+      "id": "cat_007",
+      "name": "emergencies",
+      "icon": "emergency_icon",
+      "description": "Emergency situations, first aid, and safety",
+      "total_items": 40,
+      "cefr_level": "B1"
+    },
+    {
+      "id": "cat_008",
+      "name": "complaints",
+      "icon": "complaints_icon",
+      "description": "Handling guest complaints professionally",
+      "total_items": 50,
+      "cefr_level": "B2"
+    },
+    {
+      "id": "cat_009",
+      "name": "payments",
+      "icon": "payments_icon",
+      "description": "Billing, currencies, and payment methods",
+      "total_items": 35,
+      "cefr_level": "A2"
+    },
+    {
+      "id": "cat_010",
+      "name": "kitchen",
+      "icon": "kitchen_icon",
+      "description": "Kitchen equipment, cooking terms, and safety",
+      "total_items": 55,
+      "cefr_level": "B1"
+    }
+  ],
+  "vocabulary": [
+    {
+      "id": "voc_000001",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/table.jpg",
+      "english": "table",
+      "croatian": "stol",
+      "german": "der Tisch",
+      "pronunciation": {
+        "english": "/ˈteɪbəl/",
+        "croatian": "/stôːl/",
+        "german": "/deːɐ tɪʃ/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "furniture",
+        "dining",
+        "basic",
+        "beginner"
+      ],
+      "example_sentence": {
+        "english": "Please set the table for four guests.",
+        "croatian": "Molim vas, postavite stol za četiri gosta.",
+        "german": "Bitte decken Sie den Tisch für vier Gäste."
+      },
+      "quiz": {
+        "question": "What is the German word for 'table'?",
+        "correct_answer": "der Tisch",
+        "options": [
+          "der Stuhl",
+          "der Tisch",
+          "das Bett",
+          "die Lampe"
+        ],
+        "explanation": "'der Tisch' is the German masculine noun for table. 'der Stuhl' means chair, 'das Bett' means bed, 'die Lampe' means lamp."
+      }
+    },
+    {
+      "id": "voc_000002",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/chair.jpg",
+      "english": "chair",
+      "croatian": "stolica",
+      "german": "der Stuhl",
+      "pronunciation": {
+        "english": "/tʃɛr/",
+        "croatian": "/stǒlitsa/",
+        "german": "/deːɐ ʃtuːl/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "furniture",
+        "dining",
+        "basic",
+        "beginner"
+      ],
+      "example_sentence": {
+        "english": "We need an extra chair for this table.",
+        "croatian": "Trebamo dodatnu stolicu za ovaj stol.",
+        "german": "Wir brauchen einen zusätzlichen Stuhl für diesen Tisch."
+      },
+      "quiz": {
+        "question": "How do you say 'chair' in Croatian?",
+        "correct_answer": "stolica",
+        "options": [
+          "stol",
+          "stolica",
+          "krevet",
+          "ormar"
+        ],
+        "explanation": "'stolica' is the Croatian word for chair. 'stol' means table, 'krevet' means bed, 'ormar' means wardrobe."
+      }
+    },
+    {
+      "id": "voc_000003",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/menu.jpg",
+      "english": "menu",
+      "croatian": "jelovnik",
+      "german": "die Speisekarte",
+      "pronunciation": {
+        "english": "/ˈmɛnjuː/",
+        "croatian": "/jêloːʋniːk/",
+        "german": "/diː ˈʃpaɪzəˌkaʁtə/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "dining",
+        "service",
+        "basic",
+        "beginner"
+      ],
+      "example_sentence": {
+        "english": "Here is your menu, sir. I'll be back to take your order.",
+        "croatian": "Evo vašeg jelovnika, gospodine. Vratit ću se uzeti vašu narudžbu.",
+        "german": "Hier ist Ihre Speisekarte, mein Herr. Ich komme zurück, um Ihre Bestellung aufzunehmen."
+      },
+      "quiz": {
+        "question": "What is the Croatian word for 'menu'?",
+        "correct_answer": "jelovnik",
+        "options": [
+          "račun",
+          "jelovnik",
+          "kuhinja",
+          "piće"
+        ],
+        "explanation": "'jelovnik' is the Croatian word for menu. 'račun' means bill, 'kuhinja' means kitchen, 'piće' means drink."
+      }
+    },
+    {
+      "id": "voc_000004",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/plate.jpg",
+      "english": "plate",
+      "croatian": "tanjur",
+      "german": "der Teller",
+      "pronunciation": {
+        "english": "/pleɪt/",
+        "croatian": "/tâɲuːr/",
+        "german": "/deːɐ ˈtɛlɐ/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "tableware",
+        "dining",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Please bring a clean plate for the guest.",
+        "croatian": "Molim vas, donesite čisti tanjur za gosta.",
+        "german": "Bitte bringen Sie einen sauberen Teller für den Gast."
+      },
+      "quiz": {
+        "question": "What is the English word for 'der Teller'?",
+        "correct_answer": "plate",
+        "options": [
+          "cup",
+          "bowl",
+          "plate",
+          "spoon"
+        ],
+        "explanation": "'der Teller' translates to 'plate' in English. 'cup' is Tasse, 'bowl' is Schüssel, 'spoon' is Löffel."
+      }
+    },
+    {
+      "id": "voc_000005",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/knife.jpg",
+      "english": "knife",
+      "croatian": "nož",
+      "german": "das Messer",
+      "pronunciation": {
+        "english": "/naɪf/",
+        "croatian": "/nôːʒ/",
+        "german": "/das ˈmɛsɐ/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "cutlery",
+        "dining",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Set the knife on the right side of the plate.",
+        "croatian": "Stavite nož s desne strane tanjura.",
+        "german": "Legen Sie das Messer auf die rechte Seite des Tellers."
+      },
+      "quiz": {
+        "question": "How do you say 'knife' in German?",
+        "correct_answer": "das Messer",
+        "options": [
+          "die Gabel",
+          "das Messer",
+          "der Löffel",
+          "die Tasse"
+        ],
+        "explanation": "'das Messer' is the German neuter noun for knife. 'die Gabel' is fork, 'der Löffel' is spoon, 'die Tasse' is cup."
+      }
+    },
+    {
+      "id": "voc_000006",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/fork.jpg",
+      "english": "fork",
+      "croatian": "vilica",
+      "german": "die Gabel",
+      "pronunciation": {
+        "english": "/fɔːrk/",
+        "croatian": "/ʋîlitsa/",
+        "german": "/diː ˈɡaːbəl/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "cutlery",
+        "dining",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "The fork goes on the left side of the plate.",
+        "croatian": "Vilica ide s lijeve strane tanjura.",
+        "german": "Die Gabel kommt auf die linke Seite des Tellers."
+      },
+      "quiz": {
+        "question": "What is the Croatian word for 'fork'?",
+        "correct_answer": "vilica",
+        "options": [
+          "nož",
+          "žlica",
+          "vilica",
+          "tanjur"
+        ],
+        "explanation": "'vilica' means fork in Croatian. 'nož' means knife, 'žlica' means spoon, 'tanjur' means plate."
+      }
+    },
+    {
+      "id": "voc_000007",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/spoon.jpg",
+      "english": "spoon",
+      "croatian": "žlica",
+      "german": "der Löffel",
+      "pronunciation": {
+        "english": "/spuːn/",
+        "croatian": "/ʒlîtsa/",
+        "german": "/deːɐ ˈlœfəl/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "cutlery",
+        "dining",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Please bring a soup spoon for the guest.",
+        "croatian": "Molim vas, donesite žlicu za juhu za gosta.",
+        "german": "Bitte bringen Sie einen Suppenlöffel für den Gast."
+      },
+      "quiz": {
+        "question": "Which is the correct German article for 'Löffel'?",
+        "correct_answer": "der",
+        "options": [
+          "der",
+          "die",
+          "das",
+          "den"
+        ],
+        "explanation": "'Löffel' is a masculine noun in German, so it takes 'der' as its definite article."
+      }
+    },
+    {
+      "id": "voc_000008",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/napkin.jpg",
+      "english": "napkin",
+      "croatian": "salveta",
+      "german": "die Serviette",
+      "pronunciation": {
+        "english": "/ˈnæpkɪn/",
+        "croatian": "/sǎlʋeta/",
+        "german": "/diː zɛrˈviːɛtə/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "tableware",
+        "linen",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Fold the napkin neatly beside the plate.",
+        "croatian": "Uredno presavijte salvetu pored tanjura.",
+        "german": "Falten Sie die Serviette ordentlich neben den Teller."
+      },
+      "quiz": {
+        "question": "What is the German word for 'napkin'?",
+        "correct_answer": "die Serviette",
+        "options": [
+          "das Tuch",
+          "die Serviette",
+          "der Lappen",
+          "die Decke"
+        ],
+        "explanation": "'die Serviette' is the German word for napkin. 'das Tuch' is cloth, 'der Lappen' is rag, 'die Decke' is blanket."
+      }
+    },
+    {
+      "id": "voc_000009",
+      "category": "restaurant_objects",
+      "image": "https://cdn.eurohospitality.app/images/restaurant/tablecloth.jpg",
+      "english": "tablecloth",
+      "croatian": "stolnjak",
+      "german": "die Tischdecke",
+      "pronunciation": {
+        "english": "/ˈteɪbəlˌklɔːθ/",
+        "croatian": "/stôːlɲaːk/",
+        "german": "/diː ˈtɪʃˌdɛkə/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "linen",
+        "dining",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "This tablecloth is stained. Please change it immediately.",
+        "croatian": "Ovaj stolnjak je zamrljan. Molim vas, odmah ga promijenite.",
+        "german": "Diese Tischdecke ist fleckig. Bitte wechseln Sie sie sofort."
+      },
+      "quiz": {
+        "question": "How do you say 'tablecloth' in Croatian?",
+        "correct_answer": "stolnjak",
+        "options": [
+          "ručnik",
+          "stolnjak",
+          "plahta",
+          "zavjesa"
+        ],
+        "explanation": "'stolnjak' is the Croatian word for tablecloth. 'ručnik' is towel, 'plahta' is sheet, 'zavjesa' is curtain."
+      }
+    },
+    {
+      "id": "voc_000010",
+      "category": "hotel_reception",
+      "image": "https://cdn.eurohospitality.app/images/reception/front_desk.jpg",
+      "english": "front desk",
+      "croatian": "recepcija",
+      "german": "die Rezeption",
+      "pronunciation": {
+        "english": "/frʌnt dɛsk/",
+        "croatian": "/rɛtsěptsija/",
+        "german": "/diː ʁetsɛpˈtsi̯oːn/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "reception",
+        "hotel",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Please leave your key at the front desk when you check out.",
+        "croatian": "Molim vas, ostavite ključ na recepciji prilikom odjave.",
+        "german": "Bitte lassen Sie Ihren Schlüssel bei der Abreise an der Rezeption."
+      },
+      "quiz": {
+        "question": "What is the German word for 'front desk' in a hotel?",
+        "correct_answer": "die Rezeption",
+        "options": [
+          "der Eingang",
+          "die Rezeption",
+          "das Zimmer",
+          "die Halle"
+        ],
+        "explanation": "'die Rezeption' is the German word for hotel front desk. 'der Eingang' is entrance, 'das Zimmer' is room, 'die Halle' is hall."
+      }
+    },
+    {
+      "id": "voc_000011",
+      "category": "hotel_reception",
+      "image": "https://cdn.eurohospitality.app/images/reception/luggage_cart.jpg",
+      "english": "luggage cart",
+      "croatian": "kolica za prtljagu",
+      "german": "der Gepäckwagen",
+      "pronunciation": {
+        "english": "/ˈlʌɡɪdʒ kɑːrt/",
+        "croatian": "/kǒlitsa za pŕtʎaɡu/",
+        "german": "/deːɐ ɡəˈpɛkˌvaːɡən/"
+      },
+      "difficulty": "A2",
+      "tags": [
+        "reception",
+        "luggage",
+        "bellhop"
+      ],
+      "example_sentence": {
+        "english": "The bellhop will bring a luggage cart for your suitcases.",
+        "croatian": "Nosač će donijeti kolica za vašu prtljagu.",
+        "german": "Der Hotelpage bringt einen Gepäckwagen für Ihre Koffer."
+      },
+      "quiz": {
+        "question": "How do you say 'luggage cart' in Croatian?",
+        "correct_answer": "kolica za prtljagu",
+        "options": [
+          "kolica za prtljagu",
+          "vreća za smeće",
+          "nosiljka",
+          "invalidska kolica"
+        ],
+        "explanation": "'kolica za prtljagu' means luggage cart. 'vreća za smeće' is trash bag, 'nosiljka' is stretcher, 'invalidska kolica' is wheelchair."
+      }
+    },
+    {
+      "id": "voc_000012",
+      "category": "bar",
+      "image": "https://cdn.eurohospitality.app/images/bar/cocktail_shaker.jpg",
+      "english": "cocktail shaker",
+      "croatian": "shaker za koktele",
+      "german": "der Cocktailshaker",
+      "pronunciation": {
+        "english": "/ˈkɒkteɪl ˈʃeɪkər/",
+        "croatian": "/ʃêker za kǒktele/",
+        "german": "/deːɐ ˈkɔkteːlˌʃeːkɐ/"
+      },
+      "difficulty": "A2",
+      "tags": [
+        "bar",
+        "equipment",
+        "drinks"
+      ],
+      "example_sentence": {
+        "english": "Shake the ingredients vigorously in the cocktail shaker.",
+        "croatian": "Snažno protresite sastojke u shakeru za koktele.",
+        "german": "Schütteln Sie die Zutaten kräftig im Cocktailshaker."
+      },
+      "quiz": {
+        "question": "What is the German term for 'cocktail shaker'?",
+        "correct_answer": "der Cocktailshaker",
+        "options": [
+          "der Mixer",
+          "der Cocktailshaker",
+          "das Glas",
+          "der Löffel"
+        ],
+        "explanation": "'der Cocktailshaker' is the German term. 'der Mixer' is blender, 'das Glas' is glass, 'der Löffel' is spoon."
+      }
+    },
+    {
+      "id": "voc_000013",
+      "category": "bar",
+      "image": "https://cdn.eurohospitality.app/images/bar/wine_glass.jpg",
+      "english": "wine glass",
+      "croatian": "vinska čaša",
+      "german": "das Weinglas",
+      "pronunciation": {
+        "english": "/waɪn ɡlæs/",
+        "croatian": "/ʋîːnskaː tʃâʃa/",
+        "german": "/das ˈvaɪnˌɡlaːs/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "bar",
+        "glassware",
+        "wine"
+      ],
+      "example_sentence": {
+        "english": "Please bring two wine glasses for the red wine.",
+        "croatian": "Molim vas, donesite dvije vinske čaše za crno vino.",
+        "german": "Bitte bringen Sie zwei Weingläser für den Rotwein."
+      },
+      "quiz": {
+        "question": "How do you say 'wine glass' in Croatian?",
+        "correct_answer": "vinska čaša",
+        "options": [
+          "pivska čaša",
+          "vinska čaša",
+          "čaša za vodu",
+          "šalica"
+        ],
+        "explanation": "'vinska čaša' is wine glass. 'pivska čaša' is beer glass, 'čaša za vodu' is water glass, 'šalica' is cup."
+      }
+    },
+    {
+      "id": "voc_000014",
+      "category": "housekeeping",
+      "image": "https://cdn.eurohospitality.app/images/housekeeping/vacuum_cleaner.jpg",
+      "english": "vacuum cleaner",
+      "croatian": "usisavač",
+      "german": "der Staubsauger",
+      "pronunciation": {
+        "english": "/ˈvækjuːm ˈkliːnər/",
+        "croatian": "/usisǎʋaːtʃ/",
+        "german": "/deːɐ ˈʃtaʊpˌzaʊɡɐ/"
+      },
+      "difficulty": "A2",
+      "tags": [
+        "housekeeping",
+        "cleaning",
+        "equipment"
+      ],
+      "example_sentence": {
+        "english": "Please vacuum the carpet in room 204.",
+        "croatian": "Molim vas, usisajte tepih u sobi 204.",
+        "german": "Bitte saugen Sie den Teppich in Zimmer 204."
+      },
+      "quiz": {
+        "question": "What is the German word for 'vacuum cleaner'?",
+        "correct_answer": "der Staubsauger",
+        "options": [
+          "der Besen",
+          "der Staubsauger",
+          "der Mopp",
+          "der Eimer"
+        ],
+        "explanation": "'der Staubsauger' is vacuum cleaner. 'der Besen' is broom, 'der Mopp' is mop, 'der Eimer' is bucket."
+      }
+    },
+    {
+      "id": "voc_000015",
+      "category": "housekeeping",
+      "image": "https://cdn.eurohospitality.app/images/housekeeping/cleaning_trolley.jpg",
+      "english": "cleaning trolley",
+      "croatian": "kolica za čišćenje",
+      "german": "der Reinigungswagen",
+      "pronunciation": {
+        "english": "/ˈkliːnɪŋ ˈtrɒli/",
+        "croatian": "/kǒlitsa za tʃîʃtɕɛɲɛ/",
+        "german": "/deːɐ ˈʁaɪnɪɡʊŋsˌvaːɡən/"
+      },
+      "difficulty": "A2",
+      "tags": [
+        "housekeeping",
+        "cleaning",
+        "equipment"
+      ],
+      "example_sentence": {
+        "english": "Restock the cleaning trolley with fresh towels before starting.",
+        "croatian": "Napunite kolica za čišćenje svježim ručnicima prije početka.",
+        "german": "Füllen Sie den Reinigungswagen mit frischen Handtüchern auf, bevor Sie anfangen."
+      },
+      "quiz": {
+        "question": "How do you say 'cleaning trolley' in Croatian?",
+        "correct_answer": "kolica za čišćenje",
+        "options": [
+          "kolica za čišćenje",
+          "kolica za prtljagu",
+          "kolica za hranu",
+          "dječja kolica"
+        ],
+        "explanation": "'kolica za čišćenje' is cleaning trolley. 'kolica za prtljagu' is luggage cart, 'kolica za hranu' is food cart, 'dječja kolica' is stroller."
+      }
+    },
+    {
+      "id": "voc_000016",
+      "category": "food_and_drinks",
+      "image": "https://cdn.eurohospitality.app/images/food/coffee.jpg",
+      "english": "coffee",
+      "croatian": "kava",
+      "german": "der Kaffee",
+      "pronunciation": {
+        "english": "/ˈkɒfi/",
+        "croatian": "/kâʋa/",
+        "german": "/deːɐ ˈkafe/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "drinks",
+        "hot",
+        "breakfast"
+      ],
+      "example_sentence": {
+        "english": "Would you like a cup of coffee with your breakfast?",
+        "croatian": "Želite li šalicu kave uz doručak?",
+        "german": "Möchten Sie eine Tasse Kaffee zu Ihrem Frühstück?"
+      },
+      "quiz": {
+        "question": "What is the Croatian word for 'coffee'?",
+        "correct_answer": "kava",
+        "options": [
+          "čaj",
+          "kava",
+          "mlijeko",
+          "sok"
+        ],
+        "explanation": "'kava' is coffee. 'čaj' is tea, 'mlijeko' is milk, 'sok' is juice."
+      }
+    },
+    {
+      "id": "voc_000017",
+      "category": "food_and_drinks",
+      "image": "https://cdn.eurohospitality.app/images/food/bread.jpg",
+      "english": "bread",
+      "croatian": "kruh",
+      "german": "das Brot",
+      "pronunciation": {
+        "english": "/brɛd/",
+        "croatian": "/krûx/",
+        "german": "/das bʁoːt/"
+      },
+      "difficulty": "A1",
+      "tags": [
+        "food",
+        "bakery",
+        "basic"
+      ],
+      "example_sentence": {
+        "english": "Fresh bread is served with every meal.",
+        "croatian": "Svježi kruh se poslužuje uz svaki obrok.",
+        "german": "Frisches Brot wird zu jeder Mahlzeit serviert."
+      },
+      "quiz": {
+        "question": "Which German article goes with 'Brot'?",
+        "correct_answer": "das",
+        "options": [
+          "der",
+          "die",
+          "das",
+          "dem"
+        ],
+        "explanation": "'Brot' is a neuter noun, so it takes 'das'."
+      }
+    }
+  ],
+  "conversation_scenarios": [
+    {
+      "id": "conv_000001",
+      "situation": "Welcoming a guest at a restaurant",
+      "difficulty": "A2",
+      "category": "customer_service",
+      "customer_message": {
+        "english": "Hello, table for two please.",
+        "croatian": "Dobar dan, stol za dvoje molim.",
+        "german": "Hallo, einen Tisch für zwei bitte."
+      },
+      "correct_response": {
+        "english": "Good evening! Right this way, please. Do you prefer inside or on the terrace?",
+        "croatian": "Dobra večer! Ovuda molim. Želite li unutra ili na terasi?",
+        "german": "Guten Abend! Hier entlang bitte. Möchten Sie drinnen oder auf der Terrasse sitzen?"
+      },
+      "wrong_options": [
+        {
+          "english": "We are closed now.",
+          "croatian": "Zatvoreni smo sada.",
+          "german": "Wir sind jetzt geschlossen."
+        },
+        {
+          "english": "Only singles are available.",
+          "croatian": "Dostupni su samo solo stolovi.",
+          "german": "Es sind nur Einzeltische verfügbar."
+        },
+        {
+          "english": "You need a reservation.",
+          "croatian": "Trebate rezervaciju.",
+          "german": "Sie brauchen eine Reservierung."
+        }
+      ],
+      "tips": "Always greet with a smile and offer choice. In Croatia, 'Dobra večer' is used after sunset. In Germany, use formal 'Sie' for guests.",
+      "pronunciation_tips": {
+        "english_key": "terrace - stress first syllable",
+        "croatian_key": "ovuda - o-VU-da",
+        "german_key": "drinnen - short i, DRIN-nen"
+      }
+    },
+    {
+      "id": "conv_000002",
+      "situation": "Taking a drink order at a bar",
+      "difficulty": "A2",
+      "category": "bar",
+      "customer_message": {
+        "english": "I'd like a cold beer please. What do you have on tap?",
+        "croatian": "Htio bih hladno pivo. Što imate točeno?",
+        "german": "Ich hätte gern ein kaltes Bier. Was haben Sie vom Fass?"
+      },
+      "correct_response": {
+        "english": "We have local Croatian lager, German pilsner, and wheat beer on tap.",
+        "croatian": "Imamo domaći hrvatski lager, njemački pilsner i pšenično pivo točeno.",
+        "german": "Wir haben kroatisches Lager, deutsches Pilsner und Weizenbier vom Fass."
+      },
+      "wrong_options": [
+        {
+          "english": "Sorry, we only have water.",
+          "croatian": "Oprostite, imamo samo vodu.",
+          "german": "Entschuldigung, wir haben nur Wasser."
+        },
+        {
+          "english": "Beer is finished for today.",
+          "croatian": "Pivo je gotovo za danas.",
+          "german": "Bier ist für heute aus."
+        },
+        {
+          "english": "You must order food too.",
+          "croatian": "Morate naručiti i hranu.",
+          "german": "Sie müssen auch Essen bestellen."
+        }
+      ],
+      "tips": "Know your beer types. 'Točeno' in Croatian means on tap. German 'vom Fass' literally means 'from the barrel'.",
+      "pronunciation_tips": {
+        "english_key": "pilsner - PILS-ner",
+        "croatian_key": "točeno - TO-che-no",
+        "german_key": "Fass - short a, FAS"
+      }
+    },
+    {
+      "id": "conv_000003",
+      "situation": "Hotel check-in with reservation",
+      "difficulty": "B1",
+      "category": "hotel_reception",
+      "customer_message": {
+        "english": "Good evening, I have a reservation under the name Müller.",
+        "croatian": "Dobra večer, imam rezervaciju pod imenom Müller.",
+        "german": "Guten Abend, ich habe eine Reservierung auf den Namen Müller."
+      },
+      "correct_response": {
+        "english": "Welcome, Mr. Müller. I've found your booking. You've reserved a deluxe room for three nights. May I see your passport please?",
+        "croatian": "Dobrodošli, gospodine Müller. Našao sam vašu rezervaciju. Rezervirali ste deluxe sobu na tri noći. Mogu li vidjeti vašu putovnicu?",
+        "german": "Willkommen, Herr Müller. Ich habe Ihre Buchung gefunden. Sie haben ein Deluxe-Zimmer für drei Nächte reserviert. Darf ich bitte Ihren Reisepass sehen?"
+      },
+      "wrong_options": [
+        {
+          "english": "Sorry, no reservation under that name.",
+          "croatian": "Oprostite, nema rezervacije pod tim imenom.",
+          "german": "Entschuldigung, keine Reservierung unter diesem Namen."
+        },
+        {
+          "english": "We are fully booked tonight.",
+          "croatian": "Potpuno smo popunjeni večeras.",
+          "german": "Wir sind heute Abend ausgebucht."
+        },
+        {
+          "english": "Please come back tomorrow.",
+          "croatian": "Molim vas, dođite sutra.",
+          "german": "Bitte kommen Sie morgen wieder."
+        }
+      ],
+      "tips": "Always confirm the reservation details. In Germany and Croatia, guests must present ID upon check-in by law.",
+      "pronunciation_tips": {
+        "english_key": "reservation - re-ser-VA-tion",
+        "croatian_key": "putovnica - pu-TOV-ni-ca",
+        "german_key": "Reisepass - REI-ze-pass"
+      }
+    },
+    {
+      "id": "conv_000004",
+      "situation": "Customer complaint about cold food",
+      "difficulty": "B2",
+      "category": "complaints",
+      "customer_message": {
+        "english": "Excuse me, this soup is completely cold. I can't eat this.",
+        "croatian": "Oprostite, ova juha je potpuno hladna. Ne mogu ovo jesti.",
+        "german": "Entschuldigung, diese Suppe ist völlig kalt. Ich kann das nicht essen."
+      },
+      "correct_response": {
+        "english": "I sincerely apologize for this. Let me take it back immediately and bring you a fresh, hot bowl. It will be just a few minutes.",
+        "croatian": "Iskreno se ispričavam zbog ovoga. Odmah ću to odnijeti i donijeti vam svježu, vruću zdjelu. Bit će gotovo za nekoliko minuta.",
+        "german": "Ich entschuldige mich aufrichtig dafür. Ich nehme es sofort zurück und bringe Ihnen eine frische, heiße Schüssel. Es dauert nur ein paar Minuten."
+      },
+      "wrong_options": [
+        {
+          "english": "It's supposed to be cold soup.",
+          "croatian": "To bi trebala biti hladna juha.",
+          "german": "Es soll eine kalte Suppe sein."
+        },
+        {
+          "english": "Just eat it anyway.",
+          "croatian": "Samo pojedite to svejedno.",
+          "german": "Essen Sie es einfach trotzdem."
+        },
+        {
+          "english": "I can microwave it for you.",
+          "croatian": "Mogu vam to podgrijati u mikrovalnoj.",
+          "german": "Ich kann es für Sie in der Mikrowelle aufwärmen."
+        }
+      ],
+      "tips": "Never argue with the guest. Apologize sincerely and offer an immediate solution. Do not offer to microwave food in fine dining settings.",
+      "pronunciation_tips": {
+        "english_key": "apologize - a-POL-o-jize",
+        "croatian_key": "ispričavam - is-PRI-cha-vam",
+        "german_key": "entschuldige - ent-SCHUL-di-ge"
+      }
+    }
+  ],
+  "pronunciation_section": {
+    "english_phonetics": {
+      "description": "English pronunciation guide for hospitality terms",
+      "common_sounds": {
+        "th_voiced": {
+          "example": "this",
+          "phonetic": "/ð/",
+          "tip": "Vocal cords vibrate, tongue between teeth"
+        },
+        "th_voiceless": {
+          "example": "thank",
+          "phonetic": "/θ/",
+          "tip": "No vibration, tongue between teeth"
+        },
+        "schwa": {
+          "example": "about",
+          "phonetic": "/ə/",
+          "tip": "Most common sound, relaxed neutral vowel"
+        }
+      }
+    },
+    "croatian_phonetics": {
+      "description": "Croatian pronunciation guide for hospitality terms",
+      "common_sounds": {
+        "č": {
+          "example": "čaša",
+          "phonetic": "/tʃ/",
+          "tip": "Like 'ch' in English 'chair'"
+        },
+        "ć": {
+          "example": "kuća",
+          "phonetic": "/tɕ/",
+          "tip": "Softer than č, tongue touches palate"
+        },
+        "đ": {
+          "example": "đak",
+          "phonetic": "/dʑ/",
+          "tip": "Like 'j' in English 'juice' but softer"
+        },
+        "lj": {
+          "example": "ljubav",
+          "phonetic": "/ʎ/",
+          "tip": "Like 'lli' in 'million' merged"
+        },
+        "nj": {
+          "example": "njega",
+          "phonetic": "/ɲ/",
+          "tip": "Like 'ny' in 'canyon'"
+        },
+        "r": {
+          "example": "restoran",
+          "phonetic": "/r/",
+          "tip": "Rolled r, tip of tongue vibrates"
+        }
+      }
+    },
+    "german_phonetics": {
+      "description": "German pronunciation guide for hospitality terms",
+      "common_sounds": {
+        "ch_soft": {
+          "example": "ich",
+          "phonetic": "/ç/",
+          "tip": "After i, e, ä, ö, ü - hissing sound"
+        },
+        "ch_hard": {
+          "example": "Buch",
+          "phonetic": "/x/",
+          "tip": "After a, o, u - like Scottish 'loch'"
+        },
+        "ü": {
+          "example": "Tür",
+          "phonetic": "/yː/",
+          "tip": "Say 'ee' with rounded lips"
+        },
+        "ö": {
+          "example": "schön",
+          "phonetic": "/øː/",
+          "tip": "Say 'ay' with rounded lips"
+        },
+        "ä": {
+          "example": "Gäste",
+          "phonetic": "/ɛː/",
+          "tip": "Like 'e' in 'bed' but longer"
+        },
+        "r": {
+          "example": "Rechnung",
+          "phonetic": "/ʁ/",
+          "tip": "Guttural, from back of throat"
+        }
+      }
+    }
+  },
+  "grammar_help": {
+    "polite_expressions": [
+      {
+        "id": "gram_001",
+        "title": "Formal Address in German",
+        "language": "german",
+        "rule": "Always use 'Sie' (formal you) with guests, never 'du' (informal you).",
+        "example_correct": "Möchten Sie etwas trinken? (Would you like something to drink?)",
+        "example_wrong": "Willst du etwas trinken? (Too informal - do not use)",
+        "context": "Used in all German-speaking hospitality settings"
+      },
+      {
+        "id": "gram_002",
+        "title": "Croatian Formal Address",
+        "language": "croatian",
+        "rule": "Use 'Vi' (capitalized, formal you) and 2nd person plural verb forms with guests.",
+        "example_correct": "Kako ste danas, gospodine? (How are you today, sir?)",
+        "example_wrong": "Kako si danas? (Informal - only for friends)",
+        "context": "Standard in all Croatian service environments"
+      },
+      {
+        "id": "gram_003",
+        "title": "Polite Requests in English",
+        "language": "english",
+        "rule": "Use 'would', 'could', or 'may' for polite requests rather than 'can' or 'want'.",
+        "example_correct": "Would you like to see the wine list?",
+        "example_wrong": "Do you want the wine list?",
+        "context": "Professional hospitality English worldwide"
+      },
+      {
+        "id": "gram_004",
+        "title": "German Subjunctive for Politeness",
+        "language": "german",
+        "rule": "Use Konjunktiv II (subjunctive) forms like 'hätten', 'wären', 'möchten' for very polite requests.",
+        "example_correct": "Ich hätte gern einen Kaffee. (I would like a coffee.)",
+        "example_wrong": "Ich will einen Kaffee. (I want a coffee - too direct.)",
+        "context": "Restaurant and hotel service"
+      },
+      {
+        "id": "gram_005",
+        "title": "Croatian Conditional for Offers",
+        "language": "croatian",
+        "rule": "Use 'biste li' or 'želite li' for polite offers and suggestions.",
+        "example_correct": "Želite li još jedno piće? (Would you like another drink?)",
+        "example_wrong": "Hoćeš još jedno piće? (Do you want another - too rough.)",
+        "context": "Bar and restaurant service"
+      }
+    ],
+    "professional_phrases": [
+      {
+        "id": "gram_006",
+        "title": "Thanking Guests",
+        "english": "Thank you for staying with us.",
+        "croatian": "Hvala vam što ste odsjeli kod nas.",
+        "german": "Vielen Dank, dass Sie bei uns übernachtet haben.",
+        "usage": "Use at check-out or end of service"
+      },
+      {
+        "id": "gram_007",
+        "title": "Apologizing Professionally",
+        "english": "I sincerely apologize for the inconvenience.",
+        "croatian": "Iskreno se ispričavam zbog neugodnosti.",
+        "german": "Ich entschuldige mich aufrichtig für die Unannehmlichkeiten.",
+        "usage": "When service issues occur"
+      },
+      {
+        "id": "gram_008",
+        "title": "Offering Assistance",
+        "english": "Is there anything else I can help you with?",
+        "croatian": "Mogu li vam još nešto pomoći?",
+        "german": "Kann ich Ihnen sonst noch behilflich sein?",
+        "usage": "Before concluding any interaction"
+      }
+    ],
+    "common_mistakes": [
+      {
+        "id": "gram_009",
+        "mistake": "Using 'bringen' instead of 'mitbringen'",
+        "language": "german",
+        "correction": "When bringing something to a guest, 'mitbringen' is more natural.",
+        "example_wrong": "Ich bringe Ihnen die Speisekarte.",
+        "example_correct": "Ich bringe Ihnen die Speisekarte mit."
+      },
+      {
+        "id": "gram_010",
+        "mistake": "Direct translation of 'you're welcome'",
+        "language": "croatian",
+        "correction": "In Croatian hospitality, 'molim' or 'nema na čemu' are used, not literal translation.",
+        "example_wrong": "Vi ste dobrodošli.",
+        "example_correct": "Nema na čemu. / Molim."
+      },
+      {
+        "id": "gram_011",
+        "mistake": "Confusing 'check-in' and 'check-out' prepositions",
+        "language": "english",
+        "correction": "Check IN at a hotel, check OUT of a hotel.",
+        "example_wrong": "I will check out the hotel at 3 PM.",
+        "example_correct": "I will check into the hotel at 3 PM."
+      }
+    ]
+  },
+  "daily_challenges": [
+    {
+      "id": "challenge_001",
+      "type": "daily_quiz",
+      "title": "Restaurant Essentials",
+      "description": "Test your knowledge of basic restaurant vocabulary in all three languages.",
+      "difficulty": "A1",
+      "xp_reward": 50,
+      "time_limit_minutes": 5,
+      "questions_count": 10,
+      "category": "restaurant_objects",
+      "date": "2026-05-08"
+    },
+    {
+      "id": "challenge_002",
+      "type": "timed_challenge",
+      "title": "Speed Check-in",
+      "description": "Complete the hotel check-in conversation correctly as fast as possible.",
+      "difficulty": "A2",
+      "xp_reward": 75,
+      "time_limit_seconds": 120,
+      "par_time_seconds": 90,
+      "category": "hotel_reception",
+      "date": "2026-05-08"
+    },
+    {
+      "id": "challenge_003",
+      "type": "translation_challenge",
+      "title": "Complaint Resolution Translation",
+      "description": "Translate customer complaint responses between English, Croatian, and German.",
+      "difficulty": "B1",
+      "xp_reward": 100,
+      "phrases_count": 8,
+      "category": "complaints",
+      "date": "2026-05-08"
+    },
+    {
+      "id": "challenge_004",
+      "type": "speaking_challenge",
+      "title": "Bar Order Pronunciation",
+      "description": "Read bar orders aloud and get scored on your pronunciation accuracy.",
+      "difficulty": "A2",
+      "xp_reward": 60,
+      "phrases_count": 6,
+      "category": "bar",
+      "date": "2026-05-08"
+    },
+    {
+      "id": "challenge_005",
+      "type": "daily_quiz",
+      "title": "Housekeeping Terms",
+      "description": "Master cleaning vocabulary for hotel housekeeping staff.",
+      "difficulty": "A2",
+      "xp_reward": 50,
+      "time_limit_minutes": 5,
+      "questions_count": 10,
+      "category": "housekeeping",
+      "date": "2026-05-08"
+    },
+    {
+      "id": "challenge_006",
+      "type": "timed_challenge",
+      "title": "Emergency Response",
+      "description": "Respond correctly to emergency situations under time pressure.",
+      "difficulty": "B1",
+      "xp_reward": 80,
+      "time_limit_seconds": 150,
+      "par_time_seconds": 100,
+      "category": "emergencies",
+      "date": "2026-05-08"
+    }
+  ],
+  "ai_simulation_personas": [
+    {
+      "id": "ai_persona_001",
+      "name": "Angry Businessman",
+      "personality": "impatient, demanding, formal language",
+      "common_phrases": {
+        "english": [
+          "This is unacceptable!",
+          "I want to speak to the manager.",
+          "Do you know who I am?"
+        ],
+        "croatian": [
+          "Ovo je neprihvatljivo!",
+          "Želim razgovarati s upraviteljem.",
+          "Znate li tko sam ja?"
+        ],
+        "german": [
+          "Das ist inakzeptabel!",
+          "Ich möchte den Manager sprechen.",
+          "Wissen Sie, wer ich bin?"
+        ]
+      },
+      "difficulty": "B2",
+      "recommended_tactics": "Stay calm, use formal titles, offer concrete solutions quickly, avoid excuses"
+    },
+    {
+      "id": "ai_persona_002",
+      "name": "Friendly Tourist",
+      "personality": "relaxed, curious, informal but polite",
+      "common_phrases": {
+        "english": [
+          "Wow, this place is beautiful!",
+          "What do you recommend?",
+          "Can you tell me about local customs?"
+        ],
+        "croatian": [
+          "Ovo mjesto je prekrasno!",
+          "Što preporučujete?",
+          "Možete li mi reći o lokalnim običajima?"
+        ],
+        "german": [
+          "Wow, dieser Ort ist wunderschön!",
+          "Was empfehlen Sie?",
+          "Können Sie mir etwas über lokale Bräuche erzählen?"
+        ]
+      },
+      "difficulty": "A2",
+      "recommended_tactics": "Be warm and enthusiastic, share local tips, use a conversational but professional tone"
+    },
+    {
+      "id": "ai_persona_003",
+      "name": "Elderly Guest",
+      "personality": "polite, slower pace, may have hearing difficulties",
+      "common_phrases": {
+        "english": [
+          "Could you speak a bit louder, dear?",
+          "I need some assistance with the stairs.",
+          "What time is breakfast served?"
+        ],
+        "croatian": [
+          "Možete li govoriti malo glasnije, dragi?",
+          "Trebam pomoć sa stepenicama.",
+          "U koliko sati se poslužuje doručak?"
+        ],
+        "german": [
+          "Könnten Sie etwas lauter sprechen, bitte?",
+          "Ich brauche Hilfe mit der Treppe.",
+          "Um wie viel Uhr wird Frühstück serviert?"
+        ]
+      },
+      "difficulty": "A2",
+      "recommended_tactics": "Speak clearly and slightly louder, offer physical assistance, be patient and kind"
+    },
+    {
+      "id": "ai_persona_004",
+      "name": "Drunk Bar Customer",
+      "personality": "loud, unpredictable, slurred speech, demanding",
+      "common_phrases": {
+        "english": [
+          "Another round for everyone!",
+          "You cut me off? Seriously?",
+          "I'm not drunk, I'm fine to drive."
+        ],
+        "croatian": [
+          "Još jednu rundu za sve!",
+          "Prestali ste me posluživati? Ozbiljno?",
+          "Nisam pijan, mogu voziti."
+        ],
+        "german": [
+          "Noch eine Runde für alle!",
+          "Sie verweigern mir den Service? Ernsthaft?",
+          "Ich bin nicht betrunken, ich kann fahren."
+        ]
+      },
+      "difficulty": "B2",
+      "recommended_tactics": "Stay calm but firm, know local alcohol service laws, offer water/coffee, arrange taxi if needed"
+    },
+    {
+      "id": "ai_persona_005",
+      "name": "Luxury Hotel Guest",
+      "personality": "high expectations, detail-oriented, expects premium service",
+      "common_phrases": {
+        "english": [
+          "Is this your best suite?",
+          "I expect turndown service by 8 PM.",
+          "The champagne isn't chilled properly."
+        ],
+        "croatian": [
+          "Je li ovo vaš najbolji apartman?",
+          "Očekujem turndown servis do 20 sati.",
+          "Šampanjac nije pravilno ohlađen."
+        ],
+        "german": [
+          "Ist das Ihre beste Suite?",
+          "Ich erwarte den Turndown-Service bis 20 Uhr.",
+          "Der Champagner ist nicht richtig gekühlt."
+        ]
+      },
+      "difficulty": "B1",
+      "recommended_tactics": "Use elevated formal language, anticipate needs before they ask, ensure flawless service delivery"
+    },
+    {
+      "id": "ai_persona_006",
+      "name": "Family with Children",
+      "personality": "slightly stressed, concerned about child-friendliness, needs practical help",
+      "common_phrases": {
+        "english": [
+          "Do you have a kids' menu?",
+          "Where can we warm up baby food?",
+          "Is there a play area nearby?"
+        ],
+        "croatian": [
+          "Imate li dječji jelovnik?",
+          "Gdje možemo podgrijati dječju hranu?",
+          "Ima li igralište u blizini?"
+        ],
+        "german": [
+          "Haben Sie eine Kinderkarte?",
+          "Wo können wir Babynahrung aufwärmen?",
+          "Gibt es einen Spielplatz in der Nähe?"
+        ]
+      },
+      "difficulty": "A2",
+      "recommended_tactics": "Be accommodating, offer child-friendly options, be patient with noise or mess, provide practical local info"
+    }
+  ],
+  "workflows": [
+    {
+      "id": "workflow_001",
+      "role": "restaurant_waiter",
+      "title": "Restaurant Service Workflow",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Greet guest at entrance",
+          "phrase_english": "Good evening! Welcome to [Restaurant Name].",
+          "phrase_croatian": "Dobra večer! Dobrodošli u [Restaurant Name].",
+          "phrase_german": "Guten Abend! Willkommen im [Restaurant Name]."
+        },
+        {
+          "step": 2,
+          "action": "Check reservation",
+          "phrase_english": "Do you have a reservation?",
+          "phrase_croatian": "Imate li rezervaciju?",
+          "phrase_german": "Haben Sie eine Reservierung?"
+        },
+        {
+          "step": 3,
+          "action": "Seat the guest",
+          "phrase_english": "Right this way, please. Here is your table.",
+          "phrase_croatian": "Ovuda, molim. Evo vašeg stola.",
+          "phrase_german": "Hier entlang, bitte. Hier ist Ihr Tisch."
+        },
+        {
+          "step": 4,
+          "action": "Present menu",
+          "phrase_english": "Here is the menu. Our special today is...",
+          "phrase_croatian": "Evo jelovnika. Naš današnji specijalitet je...",
+          "phrase_german": "Hier ist die Speisekarte. Unser Tagesgericht ist..."
+        },
+        {
+          "step": 5,
+          "action": "Take drink order",
+          "phrase_english": "May I get you something to drink to start?",
+          "phrase_croatian": "Mogu li vam donijeti nešto za piće za početak?",
+          "phrase_german": "Darf ich Ihnen etwas zu trinken bringen?"
+        },
+        {
+          "step": 6,
+          "action": "Take food order",
+          "phrase_english": "Are you ready to order?",
+          "phrase_croatian": "Jeste li spremni naručiti?",
+          "phrase_german": "Sind Sie bereit zu bestellen?"
+        },
+        {
+          "step": 7,
+          "action": "Serve food",
+          "phrase_english": "Here you are. Enjoy your meal.",
+          "phrase_croatian": "Izvolite. Dobar tek.",
+          "phrase_german": "Bitte sehr. Guten Appetit."
+        },
+        {
+          "step": 8,
+          "action": "Check on guests",
+          "phrase_english": "Is everything to your satisfaction?",
+          "phrase_croatian": "Je li sve po vašem ukusu?",
+          "phrase_german": "Ist alles zu Ihrer Zufriedenheit?"
+        },
+        {
+          "step": 9,
+          "action": "Clear plates",
+          "phrase_english": "May I take your plates?",
+          "phrase_croatian": "Mogu li uzeti vaše tanjure?",
+          "phrase_german": "Darf ich Ihre Teller abräumen?"
+        },
+        {
+          "step": 10,
+          "action": "Offer dessert/coffee",
+          "phrase_english": "Would you like to see the dessert menu?",
+          "phrase_croatian": "Želite li vidjeti desertni jelovnik?",
+          "phrase_german": "Möchten Sie die Dessertkarte sehen?"
+        },
+        {
+          "step": 11,
+          "action": "Present bill",
+          "phrase_english": "Here is your bill. Please take your time.",
+          "phrase_croatian": "Evo vašeg računa. Polako, nema žurbe.",
+          "phrase_german": "Hier ist Ihre Rechnung. Lassen Sie sich Zeit."
+        },
+        {
+          "step": 12,
+          "action": "Farewell",
+          "phrase_english": "Thank you for dining with us. Have a wonderful evening!",
+          "phrase_croatian": "Hvala vam što ste večerali kod nas. Ugodnu večer želimo!",
+          "phrase_german": "Vielen Dank für Ihren Besuch. Einen schönen Abend noch!"
+        }
+      ]
+    },
+    {
+      "id": "workflow_002",
+      "role": "hotel_receptionist",
+      "title": "Check-in/Check-out Workflow",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Welcome guest",
+          "phrase_english": "Welcome to [Hotel Name]. How may I assist you?",
+          "phrase_croatian": "Dobrodošli u [Hotel Name]. Kako vam mogu pomoći?",
+          "phrase_german": "Willkommen im [Hotel Name]. Wie kann ich Ihnen behilflich sein?"
+        },
+        {
+          "step": 2,
+          "action": "Confirm reservation",
+          "phrase_english": "May I have the name on the reservation?",
+          "phrase_croatian": "Mogu li dobiti ime na rezervaciji?",
+          "phrase_german": "Darf ich den Namen der Reservierung haben?"
+        },
+        {
+          "step": 3,
+          "action": "Request ID",
+          "phrase_english": "May I see your passport or ID card, please?",
+          "phrase_croatian": "Mogu li vidjeti vašu putovnicu ili osobnu iskaznicu?",
+          "phrase_german": "Darf ich bitte Ihren Reisepass oder Personalausweis sehen?"
+        },
+        {
+          "step": 4,
+          "action": "Confirm stay details",
+          "phrase_english": "You have a [room type] for [X] nights. Is that correct?",
+          "phrase_croatian": "Imate [room type] na [X] noći. Je li to točno?",
+          "phrase_german": "Sie haben ein [room type] für [X] Nächte. Ist das korrekt?"
+        },
+        {
+          "step": 5,
+          "action": "Give key card",
+          "phrase_english": "Here is your key card. Your room is on floor [X].",
+          "phrase_croatian": "Evo vaše ključ kartice. Vaša soba je na [X] katu.",
+          "phrase_german": "Hier ist Ihre Schlüsselkarte. Ihr Zimmer ist im [X]. Stock."
+        },
+        {
+          "step": 6,
+          "action": "Explain amenities",
+          "phrase_english": "Breakfast is served from 7 to 10 AM. The pool is on the ground floor.",
+          "phrase_croatian": "Doručak se poslužuje od 7 do 10 sati. Bazen je u prizemlju.",
+          "phrase_german": "Frühstück wird von 7 bis 10 Uhr serviert. Der Pool ist im Erdgeschoss."
+        },
+        {
+          "step": 7,
+          "action": "Offer assistance",
+          "phrase_english": "Do you need help with your luggage?",
+          "phrase_croatian": "Trebate li pomoć s prtljagom?",
+          "phrase_german": "Brauchen Sie Hilfe mit Ihrem Gepäck?"
+        },
+        {
+          "step": 8,
+          "action": "Check-out greeting",
+          "phrase_english": "How was your stay? I hope you enjoyed it.",
+          "phrase_croatian": "Kako ste proveli boravak? Nadam se da ste uživali.",
+          "phrase_german": "Wie war Ihr Aufenthalt? Ich hoffe, Sie haben ihn genossen."
+        },
+        {
+          "step": 9,
+          "action": "Process payment",
+          "phrase_english": "Your total comes to [amount]. How would you like to pay?",
+          "phrase_croatian": "Vaš ukupni iznos je [amount]. Kako želite platiti?",
+          "phrase_german": "Ihr Gesamtbetrag ist [amount]. Wie möchten Sie bezahlen?"
+        },
+        {
+          "step": 10,
+          "action": "Farewell",
+          "phrase_english": "Thank you for staying with us. We hope to see you again!",
+          "phrase_croatian": "Hvala vam što ste boravili kod nas. Nadamo se da ćemo vas opet vidjeti!",
+          "phrase_german": "Vielen Dank für Ihren Aufenthalt. Wir hoffen, Sie bald wiederzusehen!"
+        }
+      ]
+    },
+    {
+      "id": "workflow_003",
+      "role": "bartender",
+      "title": "Bar Service Workflow",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Greet customer",
+          "phrase_english": "Good evening! What can I get for you?",
+          "phrase_croatian": "Dobra večer! Što vam mogu poslužiti?",
+          "phrase_german": "Guten Abend! Was darf es für Sie sein?"
+        },
+        {
+          "step": 2,
+          "action": "Take order",
+          "phrase_english": "Would you like to see our cocktail menu?",
+          "phrase_croatian": "Želite li vidjeti naš koktel meni?",
+          "phrase_german": "Möchten Sie unsere Cocktailkarte sehen?"
+        },
+        {
+          "step": 3,
+          "action": "Prepare drink",
+          "phrase_english": "I'll have that ready for you in just a moment.",
+          "phrase_croatian": "To će biti gotovo za trenutak.",
+          "phrase_german": "Das ist in einem Moment für Sie fertig."
+        },
+        {
+          "step": 4,
+          "action": "Serve drink",
+          "phrase_english": "Here you go. Cheers!",
+          "phrase_croatian": "Izvolite. Živjeli!",
+          "phrase_german": "Bitte sehr. Prost!"
+        },
+        {
+          "step": 5,
+          "action": "Offer refill",
+          "phrase_english": "Would you like another one?",
+          "phrase_croatian": "Želite li još jedno?",
+          "phrase_german": "Möchten Sie noch einen?"
+        },
+        {
+          "step": 6,
+          "action": "Monitor intoxication",
+          "phrase_english": "I think you've had enough for tonight. Can I call you a taxi?",
+          "phrase_croatian": "Mislim da ste imali dovoljno za večeras. Mogu li vam pozvati taksi?",
+          "phrase_german": "Ich denke, Sie haben genug für heute Abend. Soll ich Ihnen ein Taxi rufen?"
+        }
+      ]
+    },
+    {
+      "id": "workflow_004",
+      "role": "housekeeping_worker",
+      "title": "Room Cleaning Workflow",
+      "steps": [
+        {
+          "step": 1,
+          "action": "Knock and announce",
+          "phrase_english": "Housekeeping! May I come in?",
+          "phrase_croatian": "Spremanje sobe! Mogu li ući?",
+          "phrase_german": "Housekeeping! Darf ich hereinkommen?"
+        },
+        {
+          "step": 2,
+          "action": "Enter and inspect",
+          "phrase_english": "I'll clean the room now. Is there anything you need?",
+          "phrase_croatian": "Sad ću očistiti sobu. Trebate li nešto?",
+          "phrase_german": "Ich werde jetzt das Zimmer reinigen. Brauchen Sie etwas?"
+        },
+        {
+          "step": 3,
+          "action": "Strip bed",
+          "phrase_english": "I'm changing the bed linens now.",
+          "phrase_croatian": "Sad mijenjam posteljinu.",
+          "phrase_german": "Ich wechsle jetzt die Bettwäsche."
+        },
+        {
+          "step": 4,
+          "action": "Clean bathroom",
+          "phrase_english": "The bathroom will be cleaned and restocked.",
+          "phrase_croatian": "Kupaonica će biti očišćena i nadopunjena.",
+          "phrase_german": "Das Badezimmer wird gereinigt und aufgefüllt."
+        },
+        {
+          "step": 5,
+          "action": "Refill amenities",
+          "phrase_english": "I've restocked the toiletries and coffee supplies.",
+          "phrase_croatian": "Napunio sam toaletne potrepštine i zalihe kave.",
+          "phrase_german": "Ich habe die Toilettenartikel und den Kaffeevorrat aufgefüllt."
+        },
+        {
+          "step": 6,
+          "action": "Final check",
+          "phrase_english": "The room is ready. Have a pleasant stay.",
+          "phrase_croatian": "Soba je spremna. Ugodan boravak želimo.",
+          "phrase_german": "Das Zimmer ist fertig. Einen angenehmen Aufenthalt."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "estimated_learning_times": {
+      "vocabulary_item": {
+        "minutes_per_item": 2,
+        "total_minutes_category": 120
+      },
+      "conversation_scenario": {
+        "minutes_per_scenario": 5,
+        "total_minutes_category": 600
+      },
+      "quiz_completion": {
+        "minutes_per_quiz": 3,
+        "total_minutes_category": 90
+      },
+      "complaint_scenario": {
+        "minutes_per_scenario": 8,
+        "total_minutes_category": 240
+      },
+      "daily_challenge": {
+        "minutes_per_challenge": 10,
+        "total_minutes_category": 50
+      },
+      "workflow_practice": {
+        "minutes_per_workflow": 15,
+        "total_minutes_category": 120
+      }
+    },
+    "cefr_mapping": {
+      "A1": [
+        "restaurant_objects",
+        "food_and_drinks"
+      ],
+      "A2": [
+        "hotel_reception",
+        "bar",
+        "housekeeping",
+        "payments"
+      ],
+      "B1": [
+        "customer_service",
+        "emergencies",
+        "kitchen"
+      ],
+      "B2": [
+        "complaints"
+      ],
+      "C1": [
+        "advanced_negotiation",
+        "cultural_communication"
+      ]
+    },
+    "popularity_scores": {
+      "vocabulary_hotel_reception": 95,
+      "conversation_complaints": 88,
+      "vocabulary_restaurant_objects": 90,
+      "workflow_waiter": 92,
+      "bar_vocabulary": 85,
+      "ai_persona_angry_customer": 78
+    }
+  }
+}
