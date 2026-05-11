@@ -10,7 +10,7 @@ import GuestAccountBanner from '@/components/GuestAccountBanner';
 import { useAuthStore } from '@/store';
 
 const CAT_LABELS = { iems: 'IEMs', accessories: 'Accessories' };
-const SUB_LABELS  = { cables: 'Cables', 'ear-tips': 'Ear Tips', bags: 'Carrying Bags', cleaning: 'Cleaning Kits', dac: 'DAC / Dongles', other: 'Other' };
+const SUB_LABELS = { cables: 'Cables', 'ear-tips': 'Ear Tips', bags: 'Carrying Bags', cleaning: 'Cleaning Kits', dac: 'DAC / Dongles', other: 'Other' };
 
 // ── Inner component — uses useSearchParams, must live inside <Suspense> ───────
 function ShopContent() {
@@ -19,42 +19,84 @@ function ShopContent() {
   const searchParams = useSearchParams();
 
   const [products, setProducts] = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [search, setSearch]     = useState('');
-  const [sort, setSort]         = useState('new');
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('new');
 
   // Read URL filters
-  const urlCat   = searchParams.get('cat')   || '';
-  const urlSub   = searchParams.get('sub')   || '';
+  const urlCat = searchParams.get('cat') || '';
+  const urlSub = searchParams.get('sub') || '';
   const urlBrand = searchParams.get('brand') || '';
 
   useEffect(() => {
     productsApi.getAll()
       .then(r => setProducts(r.data.products || []))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
     let list = [...products];
 
-    if (urlCat)   list = list.filter(p => p.category    === urlCat);
-    if (urlSub)   list = list.filter(p => p.subCategory === urlSub);
-    if (urlBrand) list = list.filter(p => p.subCategory?.toLowerCase() === urlBrand.toLowerCase());
-    if (search)   list = list.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+    // Filters
+    if (urlCat) {
+      list = list.filter((p) => p.category === urlCat);
+    }
 
-    if (sort === 'price_asc')       list.sort((a, b) => Math.min(...a.variants.map(v => v.price)) - Math.min(...b.variants.map(v => v.price)));
-    else if (sort === 'price_desc') list.sort((a, b) => Math.min(...b.variants.map(v => v.price)) - Math.min(...a.variants.map(v => v.price)));
-    else                            list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    if (urlSub) {
+      list = list.filter((p) => p.subCategory === urlSub);
+    }
+
+    if (urlBrand) {
+      list = list.filter(
+        (p) => p.subCategory?.toLowerCase() === urlBrand.toLowerCase()
+      );
+    }
+
+    if (search) {
+      list = list.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
+    // Sorting
+    list.sort((a, b) => {
+      const aInStock = a.variants?.some((v) => v.stock > 0);
+      const bInStock = b.variants?.some((v) => v.stock > 0);
+
+      // Always prioritize in-stock products
+      if (aInStock !== bInStock) {
+        return aInStock ? -1 : 1;
+      }
+
+      // Price low -> high
+      if (sort === 'price_asc') {
+        return (
+          Math.min(...a.variants.map((v) => v.price)) -
+          Math.min(...b.variants.map((v) => v.price))
+        );
+      }
+
+      // Price high -> low
+      if (sort === 'price_desc') {
+        return (
+          Math.min(...b.variants.map((v) => v.price)) -
+          Math.min(...a.variants.map((v) => v.price))
+        );
+      }
+
+      // Newest first
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
 
     return list;
   }, [products, search, sort, urlCat, urlSub, urlBrand]);
 
   const activeLabel = urlBrand
     ? urlBrand
-    : urlSub   ? (SUB_LABELS[urlSub]  || urlSub)
-    : urlCat   ? (CAT_LABELS[urlCat]  || urlCat)
-    : null;
+    : urlSub ? (SUB_LABELS[urlSub] || urlSub)
+      : urlCat ? (CAT_LABELS[urlCat] || urlCat)
+        : null;
 
   return (
     <div className="min-h-screen pt-16">
