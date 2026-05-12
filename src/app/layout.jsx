@@ -141,7 +141,7 @@ export default function RootLayout({ children }) {
           <I18nProvider>
             <AuthInit />
             <Navbar />
-            <main className="noise-bg">{children}</main>
+            <main className="noise-bg mt-8">{children}</main>
             <Footer />
             <Toaster
               position="bottom-right"
