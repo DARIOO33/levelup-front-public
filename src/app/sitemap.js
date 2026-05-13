@@ -3,8 +3,8 @@
 
 import { productPathSegment } from '@/lib/productPath';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://levelup-store.tn';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api2.levelup-store.tn';
 
 export default async function sitemap() {
   // Static pages
