@@ -67,6 +67,7 @@ function StatusTracker({ status }) {
 }
 
 function OrderCard({ order }) {
+
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const [reviews, setReviews] = useState(null); // null = not loaded yet
@@ -154,9 +155,18 @@ function OrderCard({ order }) {
 
                 return (
                   <div key={i} className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: 'var(--border)' }}>
-                    <div>
-                      <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{item.productName}</p>
-                      <p className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{item.variantName} × {item.quantity}</p>
+                    <div className="flex items-center gap-2">
+                      {item.variantImage && (
+                        <img
+                          src={item.variantImage}
+                          alt={item.productName}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      )}
+
+                      <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+                        {item.productName}<span className='ml-2 text-gray-600 font-bold'>{item.variantName} </span>
+                      </p>
                     </div>
 
                     <div className="flex-shrink-0 ml-3">

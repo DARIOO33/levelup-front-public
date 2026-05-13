@@ -300,12 +300,12 @@ export default function AdminPage() {
     if (action === 'update') setProducts(prev => prev.map(p => p._id === saved._id ? saved : p));
     else setProducts(prev => [saved, ...prev]);
   };
-  const requestDelete = (p) => { if (!actionBusy) setConfirm({ id: p._id, name: p.name }); };
+  const requestDelete = (p) => { if (!actionBusy) setConfirm({ apiId: p.slug || p._id, removeId: p._id, name: p.name }); };
   const confirmDelete = () => {
     const snap = confirm; setConfirm(null);
     withLock(async () => {
-      await productsApi.delete(snap.id);
-      setProducts(prev => prev.filter(p => p._id !== snap.id));
+      await productsApi.delete(snap.apiId);
+      setProducts(prev => prev.filter(p => p._id !== snap.removeId));
       toast.success('Product deleted');
     }).catch(() => toast.error('Failed to delete product'));
   };

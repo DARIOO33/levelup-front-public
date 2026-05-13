@@ -108,11 +108,11 @@ export const usersApi = {
 
 export const productsApi = {
   getAll:      ()           => api.get('/products'),
-  getOne:      (id)         => api.get(`/products/${id}`),
+  getOne:      (slugOrId)  => api.get(`/products/${encodeURIComponent(slugOrId)}`),
   create:      (data)       => api.post('/products', data),
-  update:      (id, data)   => api.patch(`/products/${id}`, data),
-  delete:      (id)         => api.delete(`/products/${id}`),
-  getWatchers: (id)         => api.get(`/products/${id}/notify/watchers`),
+  update:      (slugOrId, data) => api.patch(`/products/${encodeURIComponent(slugOrId)}`, data),
+  delete:      (slugOrId)  => api.delete(`/products/${encodeURIComponent(slugOrId)}`),
+  getWatchers: (slugOrId)  => api.get(`/products/${encodeURIComponent(slugOrId)}/notify/watchers`),
 };
 
 export const ordersApi = {
@@ -128,15 +128,22 @@ export const ordersApi = {
 };
 
 export const notifyApi = {
-  status:   (productId, variantId) => api.get(`/products/${productId}/notify/status`, { params: { variantId } }),
-  register: (productId, variantId) => api.post(`/products/${productId}/notify`, { variantId }),
-  remove:   (productId, variantId) => api.delete(`/products/${productId}/notify`, { data: { variantId } }),
+  status:   (slugOrId, variantId) => api.get(`/products/${encodeURIComponent(slugOrId)}/notify/status`, { params: { variantId } }),
+  /** variantId also in query — Next.js rewrites to an external API can drop POST bodies */
+  register: (slugOrId, variantId) => {
+    const p = variantId != null && variantId !== "" ? { variantId: String(variantId) } : {};
+    return api.post(`/products/${encodeURIComponent(slugOrId)}/notify`, Object.keys(p).length ? p : {}, { params: p });
+  },
+  remove: (slugOrId, variantId) =>
+    api.delete(`/products/${encodeURIComponent(slugOrId)}/notify`, {
+      params: variantId != null && variantId !== "" ? { variantId: String(variantId) } : {},
+    }),
 };
 
 export const reviewsApi = {
   getAll:         ()                  => api.get('/reviews'),
   getApproved:    ()                  => api.get('/reviews/approved'),
-  getForProduct:  (productId)         => api.get(`/reviews/product/${productId}`),
+  getForProduct:  (slugOrId)          => api.get(`/reviews/product/${encodeURIComponent(slugOrId)}`),
   create:         (data)              => api.post('/reviews', data),
   update:         (id, data)          => api.patch(`/reviews/${id}`, data),
   delete:         (id)                => api.delete(`/reviews/${id}`),
@@ -163,8 +170,8 @@ export const couponApi = {
 
 export const wishlistApi = {
   get:    ()    => api.get('/wishlist'),
-  add:    (id)  => api.post(`/wishlist/${id}`),
-  remove: (id)  => api.delete(`/wishlist/${id}`),
+  add:    (slugOrId)  => api.post(`/wishlist/${encodeURIComponent(slugOrId)}`),
+  remove: (slugOrId)  => api.delete(`/wishlist/${encodeURIComponent(slugOrId)}`),
 };
 
 export const contactApi = {

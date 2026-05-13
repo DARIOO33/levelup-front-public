@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,9 @@ import { productsApi, notifyApi, wishlistApi, reviewsApi } from '@/lib/api';
 import { useCartStore, useAuthStore } from '@/store';
 import toast from 'react-hot-toast';
 import GuestAccountBanner from '@/components/GuestAccountBanner';
+import { productPathSegment } from '@/lib/productPath';
 
-export default function ProductDetailClient({ productId, initialProduct }) {
-  const id = productId;
+export default function ProductDetailClient({ routeSlug, initialProduct }) {
   const { t } = useTranslation();
   const addItem = useCartStore((s) => s.addItem);
   const { user } = useAuthStore();
@@ -35,6 +35,11 @@ export default function ProductDetailClient({ productId, initialProduct }) {
   const [reviewAvg, setReviewAvg]       = useState(null);
   const [reviewsOpen, setReviewsOpen]   = useState(true);
 
+  const productApiKey = useMemo(
+    () => (product ? productPathSegment(product) : routeSlug),
+    [product, routeSlug]
+  );
+
   // Load product — use SSR-provided data if available, else fetch
   useEffect(() => {
     if (initialProduct) {
@@ -42,18 +47,18 @@ export default function ProductDetailClient({ productId, initialProduct }) {
       setLoading(false);
       return;
     }
-    productsApi.getOne(id)
-      .then(r => { 
-        setProduct(r.data.product); 
+    productsApi.getOne(routeSlug)
+      .then(r => {
+        setProduct(r.data.product);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [routeSlug]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-select first in-stock variant when product loads
   useEffect(() => {
     if (!product?.variants?.length) return;
-    
+
     const currentVariant = product.variants[selectedVariant];
     // If current selected variant is out of stock, find first in-stock variant
     if (currentVariant && currentVariant.stock === 0) {
@@ -67,7 +72,7 @@ export default function ProductDetailClient({ productId, initialProduct }) {
   // Also handle initial load when product first loads
   useEffect(() => {
     if (!product?.variants?.length) return;
-    
+
     const firstVariant = product.variants[0];
     if (firstVariant && firstVariant.stock === 0) {
       const firstInStockIndex = product.variants.findIndex(v => v.stock > 0);
@@ -79,8 +84,8 @@ export default function ProductDetailClient({ productId, initialProduct }) {
 
   // Load approved reviews for this product
   useEffect(() => {
-    if (!id) return;
-    reviewsApi.getForProduct(id)
+    if (!productApiKey) return;
+    reviewsApi.getForProduct(productApiKey)
       .then(r => {
         const revs = r.data.reviews || [];
         const count = r.data.count || 0;
@@ -108,7 +113,7 @@ export default function ProductDetailClient({ productId, initialProduct }) {
         }
       })
       .catch(() => {});
-  }, [id]);
+  }, [productApiKey]);
 
   // Check if product is in wishlist when user is logged in
   useEffect(() => {
@@ -125,12 +130,13 @@ export default function ProductDetailClient({ productId, initialProduct }) {
     if (!user) { toast.error('Please log in to save items'); return; }
     setWishlistLoading(true);
     try {
+      const seg = productPathSegment(product);
       if (inWishlist) {
-        await wishlistApi.remove(product._id);
+        await wishlistApi.remove(seg);
         setInWishlist(false);
         toast.success('Removed from wishlist');
       } else {
-        await wishlistApi.add(product._id);
+        await wishlistApi.add(seg);
         setInWishlist(true);
         toast.success('Saved to wishlist!');
       }
@@ -157,11 +163,11 @@ export default function ProductDetailClient({ productId, initialProduct }) {
     }
     setWatchingChecked(false);
     // Pass variant._id as string
-    notifyApi.status(id, variant._id.toString())
+    notifyApi.status(productApiKey, variant._id.toString())
       .then(r => { setIsWatching(r.data.isWatching); })
       .catch(() => setIsWatching(false))
       .finally(() => setWatchingChecked(true));
-  }, [user, product, selectedVariant]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, product, selectedVariant, productApiKey, outOfStock]);
 
   const handleAddToCart = () => {
     if (!variant || variant.stock === 0) return;
@@ -184,11 +190,11 @@ export default function ProductDetailClient({ productId, initialProduct }) {
       // Always pass variantId as string
       const variantId = variant?._id?.toString();
       if (isWatching) {
-        await notifyApi.remove(id, variantId);
+        await notifyApi.remove(productApiKey, variantId);
         setIsWatching(false);
         toast.success('Notification removed');
       } else {
-        await notifyApi.register(id, variantId);
+        await notifyApi.register(productApiKey, variantId);
         setIsWatching(true);
         toast.success("We'll notify you when this is back in stock!");
       }
@@ -298,8 +304,8 @@ export default function ProductDetailClient({ productId, initialProduct }) {
               </p>
               <div className="flex flex-wrap gap-2">
                 {product.variants.map((v, i) => (
-                  <button 
-                    key={v._id} 
+                  <button
+                    key={v._id}
                     onClick={() => v.stock > 0 && setSelectedVariant(i)}
                     disabled={v.stock === 0}
                     className="px-4 py-2 text-sm font-mono border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"

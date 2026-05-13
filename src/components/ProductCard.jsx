@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { ShoppingBag, Eye, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '@/store';
+import { productPathSegment } from '@/lib/productPath';
 import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }) {
@@ -76,7 +77,7 @@ export default function ProductCard({ product }) {
         <meta itemProp="priceCurrency" content="TND" />
         <meta itemProp="price" content={String(variant ? variant.price : minPrice)} />
         <meta itemProp="availability" content={inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'} />
-        <meta itemProp="url" content={`/product/${product._id}`} />
+        <meta itemProp="url" content={`/product/${productPathSegment(product)}`} />
         <meta itemProp="seller" content="Level Up TN" />
       </div>
       {product.featured && (
@@ -85,7 +86,7 @@ export default function ProductCard({ product }) {
         </div>
       )}
 
-      <Link href={`/product/${product._id}`} className="block relative overflow-hidden aspect-square bg-gradient-to-br from-purple-950/20 to-black">
+      <Link href={`/product/${productPathSegment(product)}`} className="block relative overflow-hidden aspect-square bg-gradient-to-br from-purple-950/20 to-black">
         {product.images?.[0] ? (
           <Image
             src={product.images[0]}
@@ -103,7 +104,7 @@ export default function ProductCard({ product }) {
           className="absolute inset-0 flex items-center justify-center gap-3 transition-all duration-300"
           style={{ background: 'rgba(0,0,0,0.5)', opacity: hovered ? 1 : 0 }}
         >
-          <Link href={`/product/${product._id}`}
+          <Link href={`/product/${productPathSegment(product)}`}
             className="w-9 h-9 bg-white/10 backdrop-blur flex items-center justify-center border border-white/20 hover:border-purple-400 hover:text-purple-400 transition-all text-white"
             style={{ borderRadius: '2px' }} onClick={(e) => e.stopPropagation()}>
             <Eye size={15} />
@@ -119,7 +120,7 @@ export default function ProductCard({ product }) {
       </Link>
 
       <div className="p-4">
-        <Link href={`/product/${product._id}`}>
+        <Link href={`/product/${productPathSegment(product)}`}>
           <h3 className="font-display text-lg tracking-wide leading-tight hover:text-purple-400 transition-colors line-clamp-1" style={{ color: 'var(--text-primary)' }} itemProp="name">
             {product.name}
           </h3>

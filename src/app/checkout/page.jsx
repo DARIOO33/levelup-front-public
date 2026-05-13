@@ -227,7 +227,11 @@ export default function CheckoutPage() {
     if (!validate()) return;
     setLoading(true);
     try {
-      const orderItems = items.map(i => ({ product: i.productId, variantID: i.variantId, quantity: i.quantity }));
+      const orderItems = items.map(i => ({
+        product: i.productSlug || i.productId,
+        variantID: i.variantId,
+        quantity: i.quantity,
+      }));
       const fullAddress = selectedCity
         ? `${form.address || ''} ${selectedCity.value.Name} ${selectedCity.value.PostalCode || ''} ${selectedGovernorate.value}`
         : form.address;

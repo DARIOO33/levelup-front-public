@@ -10,7 +10,7 @@ const IEM_BRANDS = ['KZ','7HZ','Moondrop','Simgot','Truthear','LETSHUOER','TinHi
 const ACCESSORY_SUBS = ['cables','ear-tips','bags','cleaning','dac','other'];
 const emptyVariant = () => ({ title: '', price: '', stock: '', image: '' });
 const emptyForm   = () => ({
-  name: '', description: '', category: 'iems', subCategory: '', featured: false,
+  name: '', slug: '', description: '', category: 'iems', subCategory: '', featured: false,
   images: [''], variants: [emptyVariant()], specifications: {},
 });
 
@@ -51,6 +51,7 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
       : { ...(product.specifications || {}) };
     setForm({
       name:           mode === 'duplicate' ? `${product.name} (Copy)` : product.name,
+      slug:           mode === 'duplicate' ? '' : (product.slug || ''),
       description:    product.description || '',
       category:       product.category    || 'iems',
       subCategory:    product.subCategory  || '',
@@ -66,7 +67,7 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
   // 2 — fetch watcher summary when editing (shows who is waiting for restock)
   useEffect(() => {
     if (product?._id && mode === 'edit') {
-      productsApi.getWatchers(product._id)
+      productsApi.getWatchers(product.slug || product._id)
         .then(r => setWatcherInfo(r.data))
         .catch(() => setWatcherInfo(null));
     } else {
@@ -107,6 +108,7 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
     images:         form.images.filter(img => img.trim()),
     variants:       form.variants.map(v => ({ ...(v._id ? { _id: v._id } : {}), title: v.title.trim(), price: Number(v.price), stock: Number(v.stock), image: v.image.trim() })),
     specifications: form.specifications,
+    ...(form.slug?.trim() ? { slug: form.slug.trim() } : {}),
     ...(isEdit ? { notifyWatchers } : {}),
   });
 
@@ -133,7 +135,7 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
     try {
       const payload = buildPayload(notifyWatchers);
       if (isEdit && product?._id) {
-        const res = await productsApi.update(product._id, payload);
+        const res = await productsApi.update(product.slug || product._id, payload);
         onSaved(res.data.product, 'update');
         toast.success(notifyWatchers ? 'Product updated — watchers notified' : 'Product updated');
       } else {
@@ -217,6 +219,11 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
+            </div>
+
+            <div>
+              <Label text="URL slug (optional)" />
+              <Inp value={form.slug} onChange={e => set('slug', e.target.value)} placeholder="e.g. kz-zsn-pro-x (set in DB or here)" />
             </div>
 
             {/* Sub-category */}

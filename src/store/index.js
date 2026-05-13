@@ -87,7 +87,7 @@ export const useCartStore = create(
           set({
             items: items.map((i) =>
               i.productId === product._id && i.variantId === variant._id
-                ? { ...i, quantity: i.quantity + quantity }
+                ? { ...i, quantity: i.quantity + quantity, productSlug: product.slug || i.productSlug }
                 : i
             ),
           });
@@ -97,6 +97,7 @@ export const useCartStore = create(
               ...items,
               {
                 productId: product._id,
+                productSlug: product.slug || null,
                 variantId: variant._id,
                 name: product.name,
                 variantName: variant.title,

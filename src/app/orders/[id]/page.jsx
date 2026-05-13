@@ -2,23 +2,24 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, XCircle, RefreshCw } from 'lucide-react';
 import { ordersApi } from '@/lib/api';
 
 const STATUS_CONFIG = {
-  pending:    { color: '#f59e0b', bg: '#f59e0b15', Icon: Clock,       label: 'Order Pending',    desc: 'Your order has been received and is awaiting confirmation.'      },
-  processing: { color: '#3b82f6', bg: '#3b82f615', Icon: RefreshCw,   label: 'Processing',       desc: 'Your order is being prepared and packed by our team.'             },
-  shipped:    { color: '#8b5cf6', bg: '#8b5cf615', Icon: Truck,       label: 'Shipped',          desc: 'Your order is on its way! Expect delivery soon.'                  },
-  delivered:  { color: '#22c55e', bg: '#22c55e15', Icon: CheckCircle, label: 'Delivered',        desc: 'Your order has been delivered. Enjoy your purchase!'              },
-  cancelled:  { color: '#ef4444', bg: '#ef444415', Icon: XCircle,     label: 'Cancelled',        desc: 'This order has been cancelled. Contact us if you have questions.' },
+  pending: { color: '#f59e0b', bg: '#f59e0b15', Icon: Clock, label: 'Order Pending', desc: 'Your order has been received and is awaiting confirmation.' },
+  processing: { color: '#3b82f6', bg: '#3b82f615', Icon: RefreshCw, label: 'Processing', desc: 'Your order is being prepared and packed by our team.' },
+  shipped: { color: '#8b5cf6', bg: '#8b5cf615', Icon: Truck, label: 'Shipped', desc: 'Your order is on its way! Expect delivery soon.' },
+  delivered: { color: '#22c55e', bg: '#22c55e15', Icon: CheckCircle, label: 'Delivered', desc: 'Your order has been delivered. Enjoy your purchase!' },
+  cancelled: { color: '#ef4444', bg: '#ef444415', Icon: XCircle, label: 'Cancelled', desc: 'This order has been cancelled. Contact us if you have questions.' },
 };
 
 const STATUS_STEPS = ['pending', 'processing', 'shipped', 'delivered'];
 
 function Timeline({ status }) {
   const isCancelled = status === 'cancelled';
-  const currentIdx  = STATUS_STEPS.indexOf(status);
+  const currentIdx = STATUS_STEPS.indexOf(status);
 
   return (
     <div className="relative">
@@ -27,17 +28,17 @@ function Timeline({ status }) {
 
       <div className="space-y-0">
         {STATUS_STEPS.map((step, i) => {
-          const cfg      = STATUS_CONFIG[step];
-          const done     = !isCancelled && i <= currentIdx;
-          const active   = !isCancelled && i === currentIdx;
-          const Icon     = cfg.Icon;
+          const cfg = STATUS_CONFIG[step];
+          const done = !isCancelled && i <= currentIdx;
+          const active = !isCancelled && i === currentIdx;
+          const Icon = cfg.Icon;
 
           return (
             <div key={step} className="flex items-start gap-5 pb-8 last:pb-0 relative">
               {/* Circle */}
               <div className="relative z-10 flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all"
                 style={{
-                  background:  done ? cfg.color : 'var(--bg-secondary)',
+                  background: done ? cfg.color : 'var(--bg-secondary)',
                   borderColor: done ? cfg.color : 'var(--border)',
                 }}>
                 <Icon size={16} style={{ color: done ? '#fff' : 'var(--text-muted)' }}
@@ -76,10 +77,11 @@ function Timeline({ status }) {
 }
 
 export default function OrderTrackingPage() {
-  const { id }                    = useParams();
-  const [order, setOrder]         = useState(null);
-  const [loading, setLoading]     = useState(true);
-  const [notFound, setNotFound]   = useState(false);
+  const { id } = useParams();
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  console.log(order);
 
   useEffect(() => {
     ordersApi.track(id)
@@ -142,15 +144,38 @@ export default function OrderTrackingPage() {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
               className="card-glass p-5">
               <p className="text-[10px] font-mono uppercase tracking-widest mb-4" style={{ color: 'var(--text-muted)' }}>Order Summary</p>
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {order.items?.map((item, i) => (
-                  <div key={i} className="flex items-center justify-between text-xs">
-                    <span style={{ color: 'var(--text-primary)' }}>{item.productName}</span>
-                    <span className="font-mono" style={{ color: 'var(--text-muted)' }}>{item.variantName} × {item.quantity}</span>
+                  <div key={i} className="flex items-center gap-3">
+                    {/* Product Image - NEW ADDITION */}
+                    <div className="w-12 h-12 rounded-md overflow-hidden flex-shrink-0 bg-gray-100 dark:bg-gray-800">
+                      {item.variantImage ? (
+                        <Image
+                          src={item.variantImage}
+                          alt={item.productName}
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package size={20} style={{ color: 'var(--text-muted)' }} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{item.productName}</p>
+                        {item.variantName && (
+                          <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{item.variantName}</p>
+                        )}
+                      </div>
+                      <span className="font-mono text-xs" style={{ color: 'var(--text-muted)' }}>× {item.quantity}</span>
+                    </div>
                   </div>
                 ))}
               </div>
-              <div className="border-t mt-3 pt-3 flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
+              <div className="border-t mt-4 pt-3 flex items-center justify-between" style={{ borderColor: 'var(--border)' }}>
                 <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>Total</span>
                 <span className="font-mono font-bold" style={{ color: 'var(--purple)' }}>{order.totalAmount} TND</span>
               </div>

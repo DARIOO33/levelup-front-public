@@ -5,14 +5,15 @@
 //  • Google Image Search rich results (product image + price)
 
 import ProductDetailClient from './ProductDetailClient';
+import { productPathSegment } from '@/lib/productPath';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 // Fetch product server-side (used by both generateMetadata and the page)
-async function fetchProduct(id) {
+async function fetchProduct(slugOrId) {
   try {
-    const res = await fetch(`${API_URL}/api/products/${id}`, {
+    const res = await fetch(`${API_URL}/api/products/${encodeURIComponent(slugOrId)}`, {
       next: { revalidate: 300 }, // ISR: revalidate every 5 minutes
     });
     if (!res.ok) return null;
@@ -25,8 +26,9 @@ async function fetchProduct(id) {
 
 // ── Dynamic metadata per product ─────────────────────────────────────────────
 export async function generateMetadata({ params }) {
-  const { id } = await params;
-  const product = await fetchProduct(id);
+  const { slug: slugParam } = await params;
+  const product = await fetchProduct(slugParam);
+  const urlSeg = product ? productPathSegment(product) : slugParam;
 
   if (!product) {
     return {
@@ -81,7 +83,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: pageTitle,
       description,
-      url: `${SITE_URL}/product/${id}`,
+      url: `${SITE_URL}/product/${urlSeg}`,
       siteName: 'Level Up TN',
       type: 'website',
       images: image
@@ -95,15 +97,16 @@ export async function generateMetadata({ params }) {
       images: image ? [image] : [],
     },
     alternates: {
-      canonical: `${SITE_URL}/product/${id}`,
+      canonical: `${SITE_URL}/product/${urlSeg}`,
     },
   };
 }
 
 // ── Page component ────────────────────────────────────────────────────────────
 export default async function ProductPage({ params }) {
-  const { id } = await params;
-  const product = await fetchProduct(id);
+  const { slug: slugParam } = await params;
+  const product = await fetchProduct(slugParam);
+  const urlSeg = product ? productPathSegment(product) : slugParam;
 
   // Build JSON-LD Product schema for Google rich results & image search
   let productSchema = null;
@@ -123,8 +126,8 @@ export default async function ProductPage({ params }) {
         ? { '@type': 'Brand', name: product.brand }
         : undefined,
       image: product.images?.length ? product.images : (image ? [image] : undefined),
-      url: `${SITE_URL}/product/${id}`,
-      sku: id,
+      url: `${SITE_URL}/product/${urlSeg}`,
+      sku: String(product.slug || product._id),
       // Individual offers per variant
       offers: product.variants?.length
         ? {
@@ -150,7 +153,7 @@ export default async function ProductPage({ params }) {
               v.stock > 0
                 ? 'https://schema.org/InStock'
                 : 'https://schema.org/OutOfStock',
-            url: `${SITE_URL}/product/${id}`,
+            url: `${SITE_URL}/product/${urlSeg}`,
             seller: { '@type': 'Organization', name: 'Level Up TN' },
           })),
         }
@@ -181,7 +184,7 @@ export default async function ProductPage({ params }) {
         />
       )}
       {/* Pass the pre-fetched product so the client avoids a double fetch */}
-      <ProductDetailClient productId={id} initialProduct={product} />
+      <ProductDetailClient routeSlug={slugParam} initialProduct={product} />
     </>
   );
 }

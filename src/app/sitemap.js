@@ -1,6 +1,8 @@
 // Dynamic sitemap — Next.js generates /sitemap.xml at build time (and ISR)
 // Includes all product pages so Google indexes each product with its URL
 
+import { productPathSegment } from '@/lib/productPath';
+
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
@@ -45,7 +47,7 @@ export default async function sitemap() {
     if (res.ok) {
       const data = await res.json();
       productPages = (data.products || []).map((p) => ({
-        url: `${SITE_URL}/product/${p._id}`,
+        url: `${SITE_URL}/product/${productPathSegment(p)}`,
         lastModified: new Date(p.updatedAt || p.createdAt || Date.now()),
         changeFrequency: 'weekly',
         priority: 0.85,

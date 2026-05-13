@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
 import { useAuthStore, useCartStore } from '@/store';
 import { wishlistApi } from '@/lib/api';
+import { productPathSegment } from '@/lib/productPath';
 import toast from 'react-hot-toast';
 
 export default function WishlistPage() {
@@ -27,10 +28,10 @@ export default function WishlistPage() {
       .finally(() => setLoading(false));
   }, [user, initialized]);
 
-  const handleRemove = async (productId) => {
+  const handleRemove = async (product) => {
     try {
-      await wishlistApi.remove(productId);
-      setItems(prev => prev.filter(p => p._id !== productId));
+      await wishlistApi.remove(productPathSegment(product));
+      setItems(prev => prev.filter(p => p._id !== product._id));
       toast.success('Removed from wishlist');
     } catch { toast.error('Failed to remove'); }
   };
@@ -73,14 +74,14 @@ export default function WishlistPage() {
                 return (
                   <motion.div key={product._id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
                     className="card-glass overflow-hidden group">
-                    <Link href={`/product/${product._id}`} className="block relative aspect-square overflow-hidden"
+                    <Link href={`/product/${productPathSegment(product)}`} className="block relative aspect-square overflow-hidden"
                       style={{ background: 'var(--bg-secondary)' }}>
                       {product.images?.[0]
                         ? <Image src={product.images[0]} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-105" sizes="(max-width:640px) 100vw,33vw" />
                         : <div className="w-full h-full flex items-center justify-center text-5xl opacity-20">🎧</div>}
                     </Link>
                     <div className="p-4">
-                      <Link href={`/product/${product._id}`}>
+                      <Link href={`/product/${productPathSegment(product)}`}>
                         <h3 className="font-display text-lg tracking-wide line-clamp-1 hover:text-purple-400 transition-colors" style={{ color: 'var(--text-primary)' }}>{product.name}</h3>
                       </Link>
                       <p className="font-mono text-base font-semibold mt-1" style={{ color: 'var(--purple)' }}>{minPrice} <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>TND</span></p>
@@ -89,7 +90,7 @@ export default function WishlistPage() {
                           className="flex-1 btn-primary py-2 text-xs flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
                           <ShoppingBag size={12} /> {inStock ? 'Add to Cart' : 'Out of Stock'}
                         </button>
-                        <button onClick={() => handleRemove(product._id)}
+                        <button onClick={() => handleRemove(product)}
                           className="p-2 rounded transition-colors hover:text-red-400 flex-shrink-0"
                           style={{ color: 'var(--text-muted)' }} title={t('wishlist.remove')}>
                           <Trash2 size={14} />
