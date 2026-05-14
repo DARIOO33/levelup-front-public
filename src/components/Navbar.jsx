@@ -237,15 +237,21 @@ export default function Navbar() {
       }}
     >
       <div
-        className="top-0 left-0 right-0 z-[60] text-center text-xs font-mono py-1.5"
+        className="top-0 left-0 right-0 z-[60] text-center text-xs font-mono py-1.5 overflow-hidden relative"
         style={{
-          background: 'rgba(124,58,255,0.9)', // purple
+          background: 'linear-gradient(90deg, #5800eb, #7c3aff, #9c6aff, #7c3aff, #5800eb)',
+          backgroundSize: '300% 100%',
+          animation: 'gradientShift 4s ease infinite',
           color: 'white',
           backdropFilter: 'blur(10px)',
           borderBottom: '1px solid rgba(255,255,255,0.1)',
         }}
       >
-        🚚 {t('nav.shipping')}
+        <span className="relative z-10">🚚 {t('nav.shipping')}</span>
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
+          animation: 'shimmer 2s linear infinite',
+        }} />
       </div>
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}

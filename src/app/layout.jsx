@@ -5,6 +5,9 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import I18nProvider from '@/components/I18nProvider';
 import AuthInit from '@/components/AuthInit';
+import CursorEffect from '@/components/CursorEffect';
+import ScrollProgress from '@/components/ScrollProgress';
+import BackToTop from '@/components/BackToTop';
 import './globals.css';
 
 const bebasNeue = Bebas_Neue({
@@ -85,9 +88,7 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
-  alternates: {
-    canonical: SITE_URL,
-  },
+  alternates: { canonical: SITE_URL },
 };
 
 const organizationSchema = {
@@ -140,9 +141,12 @@ export default function RootLayout({ children }) {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <I18nProvider>
             <AuthInit />
+            <CursorEffect />
+            <ScrollProgress />
             <Navbar />
             <main className="noise-bg mt-8">{children}</main>
             <Footer />
+            <BackToTop />
             <Toaster
               position="bottom-right"
               toastOptions={{

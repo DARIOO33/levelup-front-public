@@ -155,7 +155,7 @@ function ShopContent() {
           <div className="flex items-center justify-center py-32"><div className="spinner" /></div>
         ) : filtered.length > 0 ? (
           <AnimatePresence mode="popLayout">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
               {filtered.map(p => <ProductCard key={p._id} product={p} />)}
             </div>
           </AnimatePresence>
