@@ -70,10 +70,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api2.levelup-store.t
 
 // Static dates for unchanged pages
 const STATIC_PAGE_DATES = {
-  '/': '2026-01-01',
-  '/about': '2026-01-15',
-  '/contact': '2026-01-15',
-  '/shop': '2026-02-01',
+  '/': '2025-01-01',
+  '/about': '2025-01-15',
+  '/contact': '2025-01-15',
+  '/shop': '2025-02-01',
 };
 
 export default async function sitemap() {
