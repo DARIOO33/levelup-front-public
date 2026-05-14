@@ -1,30 +1,32 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useMemo } from 'react';
 
-// Animated SVG waveform for hero section ambiance
-export default function AudioWave({ className = '', color = '#7c3aff', bars = 48, height = 80 }) {
-  const barsArr = Array.from({ length: bars });
+// Reduced default bar count — fewer animated elements = less GPU work
+export default function AudioWave({ className = '', color = '#7c3aff', bars = 32, height = 80 }) {
+  const barsData = useMemo(() => (
+    Array.from({ length: bars }, (_, i) => ({
+      h: 20 + Math.sin(i * 0.4) * 40 + Math.random() * 20,
+      delay: (i / bars) * 1.2,
+      dur: 0.9 + Math.sin(i * 0.7) * 0.3,
+      opacity: 0.35 + Math.sin(i * 0.3) * 0.25,
+    }))
+  ), [bars]);
 
   return (
     <div className={`flex items-end gap-[2px] ${className}`} style={{ height }}>
-      {barsArr.map((_, i) => {
-        const baseH = 20 + Math.sin(i * 0.4) * 40 + Math.random() * 20;
-        const delay = (i / bars) * 1.2;
-        const dur = 0.8 + Math.sin(i * 0.7) * 0.4;
-        return (
-          <div
-            key={i}
-            className="wave-bar flex-1"
-            style={{
-              height: `${baseH}%`,
-              background: `linear-gradient(to top, ${color}, transparent)`,
-              opacity: 0.4 + Math.sin(i * 0.3) * 0.3,
-              animationDelay: `${delay}s`,
-              animationDuration: `${dur}s`,
-            }}
-          />
-        );
-      })}
+      {barsData.map(({ h, delay, dur, opacity }, i) => (
+        <div
+          key={i}
+          className="wave-bar flex-1"
+          style={{
+            height: `${h}%`,
+            background: `linear-gradient(to top, ${color}, transparent)`,
+            opacity,
+            animationDelay: `${delay}s`,
+            animationDuration: `${dur}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }

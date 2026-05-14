@@ -144,7 +144,7 @@ export default function RootLayout({ children }) {
             <CursorEffect />
             <ScrollProgress />
             <Navbar />
-            <main className="noise-bg mt-8">{children}</main>
+            <main className="mt-8">{children}</main>
             <Footer />
             <BackToTop />
             <Toaster

@@ -4,7 +4,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { ShoppingBag, Eye, Zap, Heart } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore, useAuthStore } from '@/store';
 import { productPathSegment } from '@/lib/productPath';
 import { wishlistApi } from '@/lib/api';
@@ -20,18 +19,17 @@ export default function ProductCard({ product }) {
   const [added, setAdded] = useState(false);
   const [wishlist, setWishlist] = useState(false);
   const [quickView, setQuickView] = useState(false);
-  const cardRef = useRef(null);
 
   const variant = product.variants?.[selectedVariant];
   const minPrice = Math.min(...(product.variants?.map((v) => v.price) || [0]));
   const inStock = product.variants?.some((v) => v.stock > 0);
   const totalStock = product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
-  const maxVariants = 3; // show at most 3 variant pills to keep card height stable
+  const maxVariants = 3;
 
   useEffect(() => {
     if (!product.variants?.length) return;
     const cur = product.variants[selectedVariant];
-    if (cur && cur.stock === 0) {
+    if (cur?.stock === 0) {
       const idx = product.variants.findIndex(v => v.stock > 0);
       if (idx !== -1 && idx !== selectedVariant) setSelectedVariant(idx);
     }
@@ -44,26 +42,6 @@ export default function ProductCard({ product }) {
       if (idx !== -1) setSelectedVariant(idx);
     }
   }, [product.variants]);
-
-  // 3D tilt on hover
-  const handleMouseMove = (e) => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const rx = ((y - cy) / cy) * -5;
-    const ry = ((x - cx) / cx) * 5;
-    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-  };
-
-  const handleMouseLeave = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
-  };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -85,19 +63,12 @@ export default function ProductCard({ product }) {
 
   return (
     <>
-      {/* ── Card ── */}
+      {/* ── Card — no 3D tilt, no framer-motion, pure CSS hover ── */}
       <div
-        ref={cardRef}
         className="product-card group flex flex-col"
-        style={{
-          borderRadius: '4px',
-          willChange: 'transform',
-          height: '100%',           // stretch to grid row height
-          transition: 'transform 0.3s cubic-bezier(0.23,1,0.32,1), border-color 0.3s ease, box-shadow 0.3s ease',
-        }}
+        style={{ borderRadius: '4px', height: '100%' }}
         onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => { setHovered(false); handleMouseLeave(); }}
-        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setHovered(false)}
         itemScope
         itemType="https://schema.org/Product"
       >
@@ -132,20 +103,20 @@ export default function ProductCard({ product }) {
         {/* Wishlist */}
         <button
           onClick={handleWishlist}
-          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center transition-all duration-200"
+          className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center"
           style={{
             background: 'rgba(0,0,0,0.45)',
             border: '1px solid rgba(255,255,255,0.1)',
             borderRadius: '2px',
             opacity: hovered || wishlist ? 1 : 0,
-            backdropFilter: 'blur(8px)',
+            transition: 'opacity 0.2s ease',
             color: wishlist ? '#f87171' : 'white',
           }}
         >
           <Heart size={13} fill={wishlist ? 'currentColor' : 'none'} />
         </button>
 
-        {/* ── Image ── */}
+        {/* Image */}
         <div
           className="relative overflow-hidden flex-shrink-0"
           style={{ aspectRatio: '1', background: 'linear-gradient(135deg, rgba(124,58,255,0.07), var(--bg-secondary))' }}
@@ -156,7 +127,7 @@ export default function ProductCard({ product }) {
                 src={product.images[0]}
                 alt={`${product.name}${product.brand ? ' by ' + product.brand : ''} — Level Up TN`}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,25vw"
               />
             ) : (
@@ -166,72 +137,67 @@ export default function ProductCard({ product }) {
             )}
           </Link>
 
-          {/* Hover overlay with Quick View + Add */}
-          <AnimatePresence>
-            {hovered && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.22 }}
-                className="absolute inset-0 flex items-end justify-center pb-4 gap-2 pointer-events-none"
-                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 60%, transparent 100%)' }}
+          {/* Hover overlay — CSS opacity transition, no framer-motion */}
+          <div
+            className="absolute inset-0 flex items-end justify-center pb-4 gap-2 pointer-events-none"
+            style={{
+              background: 'linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.1) 60%, transparent 100%)',
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 0.2s ease',
+            }}
+          >
+            <button
+              onClick={(e) => { e.preventDefault(); setQuickView(true); }}
+              className="pointer-events-auto flex items-center gap-1.5 text-xs font-mono text-white px-3 py-2"
+              style={{
+                background: 'rgba(255,255,255,0.1)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                borderRadius: '2px',
+                transition: 'border-color 0.2s ease',
+              }}
+            >
+              <Eye size={12} /> Quick View
+            </button>
+            {inStock && (
+              <button
+                onClick={handleAddToCart}
+                className="pointer-events-auto flex items-center gap-1.5 text-xs font-mono text-white px-3 py-2"
+                style={{
+                  background: added ? 'rgba(34,197,94,0.85)' : 'rgba(124,58,255,0.88)',
+                  border: `1px solid ${added ? 'rgba(34,197,94,0.5)' : 'rgba(124,58,255,0.6)'}`,
+                  borderRadius: '2px',
+                  transition: 'background 0.2s ease, border-color 0.2s ease',
+                }}
               >
-                {/* These buttons need pointer-events */}
-                <button
-                  onClick={(e) => { e.preventDefault(); setQuickView(true); }}
-                  className="pointer-events-auto flex items-center gap-1.5 text-xs font-mono text-white px-3 py-2 transition-all hover:border-purple-400"
-                  style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    borderRadius: '2px',
-                  }}
-                >
-                  <Eye size={12} /> Quick View
-                </button>
-                {inStock && (
-                  <button
-                    onClick={handleAddToCart}
-                    className="pointer-events-auto flex items-center gap-1.5 text-xs font-mono text-white px-3 py-2 transition-all"
-                    style={{
-                      background: added ? 'rgba(34,197,94,0.85)' : 'rgba(124,58,255,0.88)',
-                      backdropFilter: 'blur(10px)',
-                      border: `1px solid ${added ? 'rgba(34,197,94,0.5)' : 'rgba(124,58,255,0.6)'}`,
-                      borderRadius: '2px',
-                    }}
-                  >
-                    <ShoppingBag size={12} />
-                    {added ? 'Added!' : 'Add to Cart'}
-                  </button>
-                )}
-              </motion.div>
+                <ShoppingBag size={12} />
+                {added ? 'Added!' : 'Add to Cart'}
+              </button>
             )}
-          </AnimatePresence>
+          </div>
 
-          {/* Bottom purple line on hover */}
-          <AnimatePresence>
-            {hovered && (
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                exit={{ scaleX: 0 }}
-                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-                className="absolute bottom-0 left-0 right-0 h-0.5"
-                style={{ background: 'linear-gradient(90deg,transparent,var(--purple),transparent)', transformOrigin: 'left' }}
-              />
-            )}
-          </AnimatePresence>
+          {/* Bottom purple line */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-0.5"
+            style={{
+              background: 'linear-gradient(90deg,transparent,var(--purple),transparent)',
+              transform: hovered ? 'scaleX(1)' : 'scaleX(0)',
+              transformOrigin: 'left',
+              transition: 'transform 0.3s ease',
+            }}
+          />
         </div>
 
-        {/* ── Info ── fixed-height layout so all cards are equal */}
+        {/* Info */}
         <div className="p-4 flex flex-col flex-1">
-          {/* Title + brand — fixed height zone */}
           <div className="mb-2" style={{ minHeight: '3.2rem' }}>
             <Link href={`/product/${productPathSegment(product)}`}>
               <h3
-                className="font-display text-lg tracking-wide leading-tight transition-colors duration-200 line-clamp-2"
-                style={{ color: hovered ? 'var(--purple-light)' : 'var(--text-primary)' }}
+                className="font-display text-lg tracking-wide leading-tight line-clamp-2"
+                style={{
+                  color: hovered ? 'var(--purple-light)' : 'var(--text-primary)',
+                  transition: 'color 0.2s ease',
+                }}
                 itemProp="name"
               >
                 {product.name}
@@ -244,7 +210,6 @@ export default function ProductCard({ product }) {
             )}
           </div>
 
-          {/* Variants — always occupies the same height regardless of count */}
           <div className="mb-3" style={{ minHeight: '1.75rem' }}>
             {product.variants?.length > 1 && (
               <div className="flex flex-wrap gap-1">
@@ -252,7 +217,7 @@ export default function ProductCard({ product }) {
                   <button
                     key={v._id}
                     onClick={() => v.stock > 0 && setSelectedVariant(i)}
-                    className="text-[10px] font-mono px-2 py-0.5 border transition-all duration-150"
+                    className="text-[10px] font-mono px-2 py-0.5 border"
                     style={{
                       borderRadius: '2px',
                       borderColor: i === selectedVariant ? 'var(--purple)' : 'var(--border)',
@@ -260,7 +225,7 @@ export default function ProductCard({ product }) {
                       background: i === selectedVariant ? 'rgba(124,58,255,0.08)' : 'transparent',
                       opacity: v.stock === 0 ? 0.4 : 1,
                       cursor: v.stock === 0 ? 'not-allowed' : 'pointer',
-                      boxShadow: i === selectedVariant ? '0 0 8px rgba(124,58,255,0.3)' : 'none',
+                      transition: 'border-color 0.15s ease, color 0.15s ease',
                     }}
                     disabled={v.stock === 0}
                   >
@@ -270,7 +235,7 @@ export default function ProductCard({ product }) {
                 {product.variants.length > maxVariants && (
                   <button
                     onClick={() => setQuickView(true)}
-                    className="text-[10px] font-mono px-2 py-0.5 border transition-all duration-150"
+                    className="text-[10px] font-mono px-2 py-0.5 border"
                     style={{ borderRadius: '2px', borderColor: 'var(--border)', color: 'var(--text-muted)' }}
                   >
                     +{product.variants.length - maxVariants} more
@@ -280,7 +245,6 @@ export default function ProductCard({ product }) {
             )}
           </div>
 
-          {/* Price + CTA — pushed to bottom */}
           <div className="flex items-center justify-between mt-auto pt-2" style={{ borderTop: '1px solid var(--border)' }}>
             <div>
               <span className="font-mono text-base font-semibold" style={{ color: 'var(--purple)' }}>
@@ -293,15 +257,14 @@ export default function ProductCard({ product }) {
             </div>
 
             {inStock ? (
-              <motion.button
+              <button
                 onClick={handleAddToCart}
                 className="btn-primary px-3 py-1.5 text-xs"
-                whileTap={{ scale: 0.95 }}
                 style={added ? { background: 'linear-gradient(135deg,#16a34a,#15803d)' } : {}}
               >
                 <ShoppingBag size={12} />
                 {added ? 'Added!' : t('shop.add_cart')}
-              </motion.button>
+              </button>
             ) : (
               <span className="text-xs font-mono px-3 py-1.5" style={{ color: 'var(--text-muted)' }}>
                 {t('shop.out_of_stock')}
@@ -311,10 +274,7 @@ export default function ProductCard({ product }) {
         </div>
       </div>
 
-      {/* ── Quick View Modal ── */}
-      {quickView && (
-        <QuickViewModal product={product} onClose={() => setQuickView(false)} />
-      )}
+      {quickView && <QuickViewModal product={product} onClose={() => setQuickView(false)} />}
     </>
   );
 }

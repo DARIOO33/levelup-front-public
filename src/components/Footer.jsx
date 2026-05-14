@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import { subscriberApi } from '@/lib/api';
-import AudioWave from '@/components/AudioWave';
 
 export default function Footer() {
   const { resolvedTheme } = useTheme();
@@ -43,14 +42,7 @@ export default function Footer() {
       {/* Top glow line */}
       <div className="h-px w-full" style={{ background: 'linear-gradient(90deg,transparent,#7c3aff,transparent)' }} />
 
-      {/* Ambient waveform background */}
-      <div className="absolute bottom-0 left-0 right-0 opacity-[0.04] pointer-events-none">
-        <AudioWave bars={100} height={80} />
-      </div>
 
-      {/* Floating orb */}
-      <div className="absolute top-10 right-10 glow-orb opacity-20 pointer-events-none"
-        style={{ width: 300, height: 300, background: 'radial-gradient(circle, rgba(124,58,255,0.3), transparent 70%)' }} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 relative">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
