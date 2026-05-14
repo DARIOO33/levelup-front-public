@@ -1,15 +1,14 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle, ArrowLeft, Package, ChevronLeft, MailCheck } from 'lucide-react';
+import { CheckCircle, ArrowLeft, Package, ChevronLeft, MailCheck, MapPin, ChevronDown, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ordersApi, couponApi } from '@/lib/api';
+import { ordersApi, couponApi, addressesApi } from '@/lib/api';
 import { useCartStore, useAuthStore } from '@/store';
 import toast from 'react-hot-toast';
-import { useEffect } from 'react';
 import Select from 'react-select';
 import { useMemo } from 'react';
 import GuestAccountBanner from '@/components/GuestAccountBanner';
@@ -92,6 +91,11 @@ export default function CheckoutPage() {
   const [selectedCity, setSelectedCity] = useState(null);
   const [cityOptions, setCityOptions] = useState([]);
 
+  // Saved addresses state
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedSavedAddress, setSelectedSavedAddress] = useState(null);
+  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+
   const wilayatTunisie = [
     { value: "Tunis", label: "Tunis" },
     { value: "Ariana", label: "Ariana" },
@@ -160,8 +164,55 @@ export default function CheckoutPage() {
         email: user.email || '',
         phone: f.phone || user.phoneNumber || '',
       }));
+      // Load saved addresses
+      addressesApi.getAll()
+        .then(res => {
+          const addrs = res.data.addresses || [];
+          setSavedAddresses(addrs);
+          // Auto-select default address
+          const def = addrs.find(a => a.isDefault) || addrs[0];
+          if (def) applySavedAddress(def);
+        })
+        .catch(() => {});
     }
   }, [user]);
+
+  // Apply a saved address to the form + governorate/city selectors
+  const applySavedAddress = (addr) => {
+    setSelectedSavedAddress(addr._id);
+    setForm(f => ({
+      ...f,
+      fullname: addr.fullname || f.fullname,
+      phone: addr.phone || f.phone,
+      address: addr.address || '',
+    }));
+    // Set governorate
+    const gov = wilayatTunisie.find(w => w.value === addr.governorate);
+    if (gov) {
+      setSelectedGovernorate(gov);
+      // Fetch cities then set city
+      fetch(`/api/municipalities?name=${gov.value}`)
+        .then(r => r.json())
+        .then(data => {
+          const cities = data[0]?.Delegations || [];
+          const seen = new Set();
+          const unique = cities.filter(c => {
+            const k = c.Name?.trim().toLowerCase();
+            if (seen.has(k)) return false;
+            seen.add(k); return true;
+          });
+          const opts = unique.map(c => ({
+            value: c,
+            label: `${c.Name}${c.PostalCode ? ` (${c.PostalCode})` : ''}`,
+          }));
+          setCityOptions(opts);
+          const cityOpt = opts.find(o => o.value.Name === addr.city);
+          if (cityOpt) setSelectedCity(cityOpt);
+        })
+        .catch(() => {});
+    }
+    setShowAddressDropdown(false);
+  };
   
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -182,8 +233,7 @@ export default function CheckoutPage() {
     const e = {};
     if (!form.fullname.trim()) e.fullname = t('checkout.required');
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = t('checkout.invalid_email');
-    if (!form.phone.trim() || !/^\+?[0-9]{8,15}$/.test(form.phone)) e.phone = t('checkout.invalid_phone');
-    if (!form.address.trim()) e.address = t('checkout.required');
+    if (!form.phone.trim() || !/^\+216[23457 9]\d{7}$/.test(form.phone)) e.phone = t('checkout.invalid_phone');
     if (!selectedGovernorate) e.governorate = t('checkout.required');
     if (!selectedCity) e.city = t('checkout.required');
     setErrors(e);
@@ -419,6 +469,91 @@ export default function CheckoutPage() {
                 {/* Form */}
                 <div className="lg:col-span-3 space-y-5">
                   <h2 className="font-mono text-xs uppercase tracking-widest mb-4 text-purple-500">{t('checkout.info')}</h2>
+
+                  {/* ── Saved addresses (logged-in users only) ── */}
+                  {user && savedAddresses.length > 0 && (
+                    <div className="relative">
+                      <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                        Saved Addresses
+                      </label>
+                      <button
+                        onClick={() => setShowAddressDropdown(v => !v)}
+                        className="w-full input-field flex items-center justify-between gap-2 text-left"
+                        style={{ color: 'var(--text-primary)' }}>
+                        <span className="flex items-center gap-2 flex-1 min-w-0">
+                          <MapPin size={14} className="text-purple-400 flex-shrink-0" />
+                          {selectedSavedAddress
+                            ? (() => {
+                                const a = savedAddresses.find(x => x._id === selectedSavedAddress);
+                                return a ? (
+                                  <span className="truncate text-sm">
+                                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded mr-2"
+                                      style={{ background: 'rgba(124,58,255,0.12)', color: 'var(--purple)' }}>
+                                      {a.label}
+                                    </span>
+                                    {a.address}, {a.city}, {a.governorate}
+                                  </span>
+                                ) : 'Select an address';
+                              })()
+                            : <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Select a saved address</span>
+                          }
+                        </span>
+                        <ChevronDown size={14} className={`flex-shrink-0 transition-transform ${showAddressDropdown ? 'rotate-180' : ''}`}
+                          style={{ color: 'var(--text-muted)' }} />
+                      </button>
+
+                      <AnimatePresence>
+                        {showAddressDropdown && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute z-50 w-full mt-1 border overflow-hidden"
+                            style={{ background: 'var(--bg-secondary)', borderColor: 'var(--border)', borderRadius: '2px' }}>
+                            {savedAddresses.map(addr => (
+                              <button key={addr._id} onClick={() => applySavedAddress(addr)}
+                                className="w-full px-4 py-3 text-left flex items-start gap-3 transition-colors hover:bg-purple-500/10 border-b last:border-b-0"
+                                style={{ borderColor: 'var(--border)' }}>
+                                <MapPin size={14} className="text-purple-400 flex-shrink-0 mt-0.5" />
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center gap-2 mb-0.5">
+                                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded"
+                                      style={{ background: 'rgba(124,58,255,0.12)', color: 'var(--purple)' }}>
+                                      {addr.label}
+                                    </span>
+                                    {addr.isDefault && (
+                                      <span className="font-mono text-[10px] px-1.5 py-0.5 rounded"
+                                        style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e' }}>
+                                        Default
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-sm truncate" style={{ color: 'var(--text-primary)' }}>
+                                    {addr.fullname} · {addr.phone}
+                                  </p>
+                                  <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>
+                                    {addr.address}, {addr.city} {addr.postalCode}, {addr.governorate}
+                                  </p>
+                                </div>
+                                {selectedSavedAddress === addr._id && (
+                                  <CheckCircle size={14} className="text-purple-400 flex-shrink-0 mt-0.5" />
+                                )}
+                              </button>
+                            ))}
+                            <Link href="/profile#addresses"
+                              className="w-full px-4 py-2.5 flex items-center gap-2 text-xs font-mono transition-colors hover:bg-purple-500/10"
+                              style={{ color: 'var(--purple)' }}
+                              onClick={() => setShowAddressDropdown(false)}>
+                              <Plus size={12} /> Manage saved addresses
+                            </Link>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      <p className="text-[10px] font-mono mt-1.5" style={{ color: 'var(--text-muted)' }}>
+                        Selecting fills the form below. You can still edit any field.
+                      </p>
+                    </div>
+                  )}
                   <Field label={t('checkout.fullname')} error={errors.fullname}>
                     <input className="input-field" value={form.fullname}
                       onChange={e => setForm({ ...form, fullname: e.target.value })} placeholder="John Doe" />
@@ -454,8 +589,25 @@ export default function CheckoutPage() {
                       )}
                     </Field>
                     <Field label={t('checkout.phone')} error={errors.phone}>
-                      <input type="tel" className="input-field" value={form.phone}
-                        onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+21612345678" />
+                      <div className="flex">
+                        <span className="flex items-center px-3 text-xs font-mono flex-shrink-0"
+                          style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRight: 'none', borderRadius: '2px 0 0 2px', color: 'var(--purple)' }}>
+                          +216
+                        </span>
+                        <input
+                          type="tel"
+                          className="input-field flex-1 min-w-0"
+                          style={{ borderRadius: '0 2px 2px 0' }}
+                          value={form.phone.replace(/^\+216/, '')}
+                          onChange={e => {
+                            const digits = e.target.value.replace(/\D/g, '').slice(0, 8);
+                            if (digits.length > 0 && !/^[23457 9]/.test(digits)) return;
+                            setForm({ ...form, phone: digits ? '+216' + digits : '' });
+                          }}
+                          placeholder="XX XXX XXX"
+                          inputMode="numeric"
+                        />
+                      </div>
                     </Field>
                   </div>
                   
@@ -490,7 +642,7 @@ export default function CheckoutPage() {
                   </Field>
 
                   {/* Detailed address */}
-                  <Field label="Detailed Address" error={errors.address}>
+                  <Field label={<>Detailed Address <span className="normal-case font-sans opacity-50 text-[10px] tracking-normal">(optional)</span></>} error={errors.address}>
                     <input
                       className="input-field"
                       value={form.address}

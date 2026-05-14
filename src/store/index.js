@@ -45,7 +45,7 @@ export const useAuthStore = create((set, get) => ({
       const { data } = await authApi.googleLogin(credential);
       resetRefreshState();
       set({ user: data.user, loading: false });
-      return { ok: true };
+      return { ok: true, isNewUser: data.isNewUser, user: data.user };
     } catch (e) {
       set({ loading: false });
       return { ok: false, message: e.response?.data?.message || 'Google login failed' };

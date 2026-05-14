@@ -106,6 +106,14 @@ export const usersApi = {
   resetPassword:        (data)       => api.post('/users/reset-password', data),
 };
 
+export const addressesApi = {
+  getAll:     ()                  => api.get('/users/me/addresses'),
+  add:        (data)              => api.post('/users/me/addresses', data),
+  update:     (id, data)          => api.patch(`/users/me/addresses/${id}`, data),
+  remove:     (id)                => api.delete(`/users/me/addresses/${id}`),
+  setDefault: (id)                => api.patch(`/users/me/addresses/${id}/default`),
+};
+
 export const productsApi = {
   getAll:      ()           => api.get('/products'),
   getOne:      (slugOrId)  => api.get(`/products/${encodeURIComponent(slugOrId)}`),
