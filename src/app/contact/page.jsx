@@ -1,39 +1,45 @@
 'use client';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import api from '@/lib/api';
 
+const contactSchema = z.object({
+  name:    z.string().min(2, 'Name must be at least 2 characters'),
+  email:   z.string().email('Please enter a valid email address'),
+  message: z.string().min(10, 'Message must be at least 10 characters').max(2000),
+});
+
 export default function ContactPage() {
   const { t } = useTranslation();
-  const [form,    setForm]    = useState({ name: '', email: '', message: '' });
-  const [sending, setSending] = useState(false);
-  const [sent,    setSent]    = useState(false);
-  const set = (k) => (e) => setForm(prev => ({ ...prev, [k]: e.target.value }));
+  const [sent, setSent] = useState(false);
 
-  const handleSubmit = async () => {
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      toast.error(t('contact.fill_fields'));
-      return;
-    }
-    setSending(true);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({ resolver: zodResolver(contactSchema) });
+
+  const onSubmit = async (data) => {
     try {
-      await api.post('/contact', form);
+      await api.post('/contact', data);
       setSent(true);
       toast.success(t('contact.success'));
     } catch (e) {
       toast.error(e.response?.data?.message || t('common.error'));
-    } finally {
-      setSending(false);
     }
   };
 
   const contactItems = [
-    { icon: Mail,    label: t('contact.email_label'),    value: 'contact@levelup.tn',  href: 'mailto:contact@levelup.tn' },
-    { icon: Phone,   label: t('contact.phone_label'),    value: '+216 12 345 678',      href: 'tel:+21612345678'          },
-    { icon: MapPin,  label: t('contact.location_label'), value: 'Tunis, Tunisia',        href: null                        },
+    { icon: Mail,   label: t('contact.email_label'),    value: 'contact@levelup.tn', href: 'mailto:contact@levelup.tn' },
+    { icon: Phone,  label: t('contact.phone_label'),    value: '+216 12 345 678',     href: 'tel:+21612345678'          },
+    { icon: MapPin, label: t('contact.location_label'), value: 'Tunis, Tunisia',       href: null                        },
   ];
 
   return (
@@ -84,29 +90,56 @@ export default function ContactPage() {
                     <p className="font-display text-3xl tracking-wide" style={{ color: 'var(--text-primary)' }}>{t('contact.success_title')}</p>
                     <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>{t('contact.success')}</p>
                   </div>
-                  <button onClick={() => { setSent(false); setForm({ name: '', email: '', message: '' }); }}
-                    className="btn-outline text-sm">{t('contact.send_another')}</button>
+                  <button onClick={() => { setSent(false); reset(); }} className="btn-outline text-sm">{t('contact.send_another')}</button>
                 </motion.div>
               ) : (
-                <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="card-glass p-8 space-y-5">
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.name')}</label>
-                    <input className="input-field" placeholder="John Doe" value={form.name} onChange={set('name')} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.email')}</label>
-                    <input type="email" className="input-field" placeholder="john@example.com" value={form.email} onChange={set('email')} />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.message')}</label>
-                    <textarea className="input-field resize-none" rows={5} maxLength={2000}
-                      placeholder={t('contact.subtitle')} value={form.message} onChange={set('message')} />
-                  </div>
-                  <button onClick={handleSubmit} disabled={sending}
-                    className="btn-primary w-full py-4 text-sm flex items-center justify-center gap-2 disabled:opacity-60">
-                    {sending ? <div className="spinner !w-4 !h-4" /> : <Send size={15} />}
-                    {sending ? t('contact.sending') : t('contact.send')}
-                  </button>
+                <motion.div key="form" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                  <form onSubmit={handleSubmit(onSubmit)} className="card-glass p-8 space-y-5" noValidate>
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.name')}</label>
+                      <input
+                        {...register('name')}
+                        className="input-field"
+                        placeholder="John Doe"
+                        style={errors.name ? { borderColor: '#f87171' } : {}}
+                      />
+                      {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name.message}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.email')}</label>
+                      <input
+                        {...register('email')}
+                        type="email"
+                        className="input-field"
+                        placeholder="john@example.com"
+                        style={errors.email ? { borderColor: '#f87171' } : {}}
+                      />
+                      {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>{t('contact.message')}</label>
+                      <textarea
+                        {...register('message')}
+                        className="input-field resize-none"
+                        rows={5}
+                        maxLength={2000}
+                        placeholder={t('contact.subtitle')}
+                        style={errors.message ? { borderColor: '#f87171' } : {}}
+                      />
+                      {errors.message && <p className="text-red-400 text-xs mt-1">{errors.message.message}</p>}
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="btn-primary w-full py-4 text-sm flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      {isSubmitting ? <div className="spinner !w-4 !h-4" /> : <Send size={15} />}
+                      {isSubmitting ? t('contact.sending') : t('contact.send')}
+                    </button>
+                  </form>
                 </motion.div>
               )}
             </AnimatePresence>

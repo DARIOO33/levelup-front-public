@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import { ShoppingBag, ArrowLeft, Share2, Check, ChevronDown, ChevronUp, Bell, BellOff, Heart, Star } from 'lucide-react';
+import { ShoppingBag, ArrowLeft, Share2, Check, ChevronDown, ChevronUp, Bell, BellOff, Heart, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { productsApi, notifyApi, wishlistApi, reviewsApi } from '@/lib/api';
 import { useCartStore, useAuthStore } from '@/store';
@@ -39,6 +39,12 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
     () => (product ? productPathSegment(product) : routeSlug),
     [product, routeSlug]
   );
+
+  const allImages = useMemo(() => {
+    if (!product) return [];
+    return [...product.images, ...product.variants.map(v => v.image).filter(Boolean)]
+      .filter((v, i, a) => a.indexOf(v) === i);
+  }, [product]);
 
   // Load product — use SSR-provided data if available, else fetch
   useEffect(() => {
@@ -215,9 +221,6 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
     </div>
   );
 
-  const allImages = [...product.images, ...product.variants.map(v => v.image).filter(Boolean)]
-    .filter((v, i, a) => a.indexOf(v) === i);
-
   return (
     <div className="min-h-screen pt-24 pb-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -235,12 +238,30 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
 
           {/* Images */}
           <div className="space-y-3">
-            <motion.div key={activeImage} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="relative aspect-square overflow-hidden card-glass" style={{ borderRadius: '4px' }}>
-              {allImages[activeImage]
-                ? <Image src={allImages[activeImage]} alt={product.name} fill className="object-cover" sizes="(max-width:1024px) 100vw,50vw" />
-                : <div className="w-full h-full flex items-center justify-center text-8xl opacity-10">🎧</div>}
-            </motion.div>
+            <div className="relative">
+              <motion.div key={activeImage} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                className="relative aspect-square overflow-hidden card-glass" style={{ borderRadius: '4px' }}>
+                {allImages[activeImage]
+                  ? <Image src={allImages[activeImage]} alt={product.name} fill className="object-cover" sizes="(max-width:1024px) 100vw,50vw" />
+                  : <div className="w-full h-full flex items-center justify-center text-8xl opacity-10">🎧</div>}
+              </motion.div>
+              {allImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImage(i => (i - 1 + allImages.length) % allImages.length)}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all hover:scale-110"
+                    style={{ background: 'rgba(5,5,8,0.55)', color: 'white', backdropFilter: 'blur(4px)' }}>
+                    <ChevronLeft size={18} />
+                  </button>
+                  <button
+                    onClick={() => setActiveImage(i => (i + 1) % allImages.length)}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full transition-all hover:scale-110"
+                    style={{ background: 'rgba(5,5,8,0.55)', color: 'white', backdropFilter: 'blur(4px)' }}>
+                    <ChevronRight size={18} />
+                  </button>
+                </>
+              )}
+            </div>
             {allImages.length > 1 && (
               <div className="flex gap-2 overflow-x-auto">
                 {allImages.map((img, i) => (
@@ -306,7 +327,14 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
                 {product.variants.map((v, i) => (
                   <button
                     key={v._id}
-                    onClick={() => v.stock > 0 && setSelectedVariant(i)}
+                    onClick={() => {
+                      if (v.stock === 0) return;
+                      setSelectedVariant(i);
+                      if (v.image) {
+                        const idx = allImages.indexOf(v.image);
+                        if (idx !== -1) setActiveImage(idx);
+                      }
+                    }}
                     disabled={v.stock === 0}
                     className="px-4 py-2 text-sm font-mono border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
                     style={{

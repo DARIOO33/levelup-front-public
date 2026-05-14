@@ -12,6 +12,8 @@ import { useAuthStore } from '@/store';
 const CAT_LABELS = { iems: 'IEMs', accessories: 'Accessories' };
 const SUB_LABELS = { cables: 'Cables', 'ear-tips': 'Ear Tips', bags: 'Carrying Bags', cleaning: 'Cleaning Kits', dac: 'DAC / Dongles', other: 'Other' };
 
+const PAGE_SIZE = 12;
+
 // ── Inner component — uses useSearchParams, must live inside <Suspense> ───────
 function ShopContent() {
   const { user } = useAuthStore();
@@ -22,6 +24,7 @@ function ShopContent() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('new');
+  const [page, setPage] = useState(1);
 
   // Read URL filters
   const urlCat = searchParams.get('cat') || '';
@@ -92,6 +95,17 @@ function ShopContent() {
     return list;
   }, [products, search, sort, urlCat, urlSub, urlBrand]);
 
+  // Reset to page 1 whenever filters change
+  const prevFilterKey = `${search}|${sort}|${urlCat}|${urlSub}|${urlBrand}`;
+  const [lastFilterKey, setLastFilterKey] = useState(prevFilterKey);
+  if (prevFilterKey !== lastFilterKey) {
+    setLastFilterKey(prevFilterKey);
+    setPage(1);
+  }
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   const activeLabel = urlBrand
     ? urlBrand
     : urlSub ? (SUB_LABELS[urlSub] || urlSub)
@@ -154,11 +168,67 @@ function ShopContent() {
         {loading ? (
           <div className="flex items-center justify-center py-32"><div className="spinner" /></div>
         ) : filtered.length > 0 ? (
-          <AnimatePresence mode="popLayout">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
-              {filtered.map(p => <ProductCard key={p._id} product={p} />)}
-            </div>
-          </AnimatePresence>
+          <>
+            <AnimatePresence mode="popLayout">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-stretch">
+                {paginated.map(p => <ProductCard key={p._id} product={p} />)}
+              </div>
+            </AnimatePresence>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-10">
+                <button
+                  onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  disabled={page === 1}
+                  className="px-3 py-1.5 text-xs font-mono border transition-colors disabled:opacity-30"
+                  style={{ borderColor: 'var(--border)', color: 'var(--text-muted)', borderRadius: '2px' }}
+                >
+                  ← Prev
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(n => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
+                  .reduce((acc, n, i, arr) => {
+                    if (i > 0 && n - arr[i - 1] > 1) acc.push('…');
+                    acc.push(n);
+                    return acc;
+                  }, [])
+                  .map((n, i) =>
+                    n === '…'
+                      ? <span key={`ellipsis-${i}`} className="px-2 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>…</span>
+                      : (
+                        <button
+                          key={n}
+                          onClick={() => { setPage(n); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className="w-8 h-8 text-xs font-mono border transition-colors"
+                          style={{
+                            borderRadius: '2px',
+                            borderColor: page === n ? 'var(--purple)' : 'var(--border)',
+                            background: page === n ? 'rgba(124,58,255,0.12)' : 'transparent',
+                            color: page === n ? 'var(--purple)' : 'var(--text-muted)',
+                          }}
+                        >
+                          {n}
+                        </button>
+                      )
+                  )}
+
+                <button
+                  onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  disabled={page === totalPages}
+                  className="px-3 py-1.5 text-xs font-mono border transition-colors disabled:opacity-30"
+                  style={{ borderColor: 'var(--border)', color: 'var(--text-muted)', borderRadius: '2px' }}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
+
+            <p className="text-center text-[10px] font-mono mt-3" style={{ color: 'var(--text-muted)' }}>
+              Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, filtered.length)} of {filtered.length}
+            </p>
+          </>
         ) : (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="text-6xl opacity-30">🎧</div>

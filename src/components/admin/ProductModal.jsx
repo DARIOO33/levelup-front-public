@@ -1,8 +1,8 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { X, Plus, Trash2, ChevronDown, ChevronUp, Bell } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Plus, Trash2, ChevronDown, ChevronUp, Bell, Upload } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { productsApi } from '@/lib/api';
+import { productsApi, uploadApi } from '@/lib/api';
 import toast from 'react-hot-toast';
 
 const CATEGORIES = ['iems', 'accessories'];
@@ -42,6 +42,46 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
   const [notifyConfirm, setNotifyConfirm] = useState(false); // show notify-watchers dialog
   const [specsOpen, setSpecsOpen] = useState(false);
   const [specRow,   setSpecRow]   = useState({ key: '', value: '' });
+  const [uploading, setUploading] = useState({});  // { [key]: true } — tracks per-slot upload state
+  const fileInputRefs = useRef({});
+
+  const handleUpload = async (slotKey, onSuccess) => {
+    const input = fileInputRefs.current[slotKey];
+    if (!input?.files?.[0]) return;
+    const file = input.files[0];
+    setUploading(prev => ({ ...prev, [slotKey]: true }));
+    try {
+      const { data } = await uploadApi.image(file);
+      onSuccess(data.url);
+      input.value = '';
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Upload failed');
+    } finally {
+      setUploading(prev => ({ ...prev, [slotKey]: false }));
+    }
+  };
+
+  const UploadBtn = ({ slotKey, onSuccess }) => (
+    <>
+      <input
+        ref={el => (fileInputRefs.current[slotKey] = el)}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={() => handleUpload(slotKey, onSuccess)}
+      />
+      <button
+        type="button"
+        title="Upload image"
+        disabled={uploading[slotKey]}
+        onClick={() => fileInputRefs.current[slotKey]?.click()}
+        className="p-2 flex-shrink-0 transition-colors hover:text-purple-400 disabled:opacity-40 disabled:cursor-not-allowed"
+        style={{ color: 'var(--text-muted)' }}
+      >
+        {uploading[slotKey] ? <div className="spinner !w-3.5 !h-3.5" /> : <Upload size={13} />}
+      </button>
+    </>
+  );
 
   // 1 — populate form when product is loaded
   useEffect(() => {
@@ -273,7 +313,8 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
               <div className="space-y-2">
                 {form.images.map((img, i) => (
                   <div key={i} className="flex gap-2">
-                    <Inp value={img} onChange={e => setImage(i, e.target.value)} placeholder="https://…/image.jpg" />
+                    <Inp value={img} onChange={e => setImage(i, e.target.value)} placeholder="https://…/image.jpg or upload →" />
+                    <UploadBtn slotKey={`img-${i}`} onSuccess={url => setImage(i, url)} />
                     {form.images.length > 1 && (
                       <button onClick={() => removeImage(i)} className="p-2 hover:text-red-400 transition-colors flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
                         <Trash2 size={13} />
@@ -308,7 +349,10 @@ export default function ProductModal({ mode, product, onClose, onSaved }) {
                       <Inp type="number" min="0" value={v.price} onChange={e => setVariant(i, 'price', e.target.value)} placeholder="Price (TND)" />
                       <Inp type="number" min="0" value={v.stock} onChange={e => setVariant(i, 'stock', e.target.value)} placeholder="Stock" />
                     </div>
-                    <Inp value={v.image} onChange={e => setVariant(i, 'image', e.target.value)} placeholder="Variant image URL" />
+                    <div className="flex gap-2">
+                      <Inp value={v.image} onChange={e => setVariant(i, 'image', e.target.value)} placeholder="Variant image URL or upload →" />
+                      <UploadBtn slotKey={`variant-${i}`} onSuccess={url => setVariant(i, 'image', url)} />
+                    </div>
                   </div>
                 ))}
               </div>

@@ -56,6 +56,22 @@ const IconBtn = ({ icon: Icon, label, onClick, hoverColor, disabled }) => (
   </button>
 );
 
+/* Simple pagination row */
+function Pager({ page, totalPages, onChange }) {
+  if (totalPages <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-1 px-4 py-3 border-t" style={{ borderColor: 'var(--border)' }}>
+      <button onClick={() => onChange(Math.max(1, page - 1))} disabled={page === 1}
+        className="px-2.5 py-1 text-[10px] font-mono border transition-colors disabled:opacity-30"
+        style={{ borderRadius: '2px', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>← Prev</button>
+      <span className="text-[10px] font-mono px-3" style={{ color: 'var(--text-muted)' }}>{page} / {totalPages}</span>
+      <button onClick={() => onChange(Math.min(totalPages, page + 1))} disabled={page === totalPages}
+        className="px-2.5 py-1 text-[10px] font-mono border transition-colors disabled:opacity-30"
+        style={{ borderRadius: '2px', borderColor: 'var(--border)', color: 'var(--text-muted)' }}>Next →</button>
+    </div>
+  );
+}
+
 /* Search + filter bar — shared across tabs */
 function FilterBar({ search, onSearch, filters = [], placeholder = 'Search…' }) {
   return (
@@ -221,9 +237,11 @@ export default function AdminPage() {
   /* ── per-tab search / filter state ── */
   const [orderSearch, setOrderSearch] = useState('');
   const [orderStatus, setOrderStatus] = useState('all');
+  const [orderPage, setOrderPage] = useState(1);
   const [productSearch, setProductSearch] = useState('');
   const [productCat, setProductCat] = useState('all');
   const [productStock, setProductStock] = useState('all');
+  const [productPage, setProductPage] = useState(1);
   const [reviewSearch, setReviewSearch] = useState('');
   const [reviewStatus, setReviewStatus] = useState('all');  // all | approved | pending | waiting
   const [reviewRating, setReviewRating] = useState('all');
@@ -417,6 +435,22 @@ export default function AdminPage() {
     });
   }, [activity, activitySearch, activityLabel]);
 
+  /* pagination */
+  const ADMIN_PAGE_SIZE = 25;
+
+  const orderTotalPages   = Math.ceil(filteredOrders.length   / ADMIN_PAGE_SIZE);
+  const productTotalPages = Math.ceil(filteredProducts.length / ADMIN_PAGE_SIZE);
+  const pagedOrders   = filteredOrders.slice((orderPage   - 1) * ADMIN_PAGE_SIZE, orderPage   * ADMIN_PAGE_SIZE);
+  const pagedProducts = filteredProducts.slice((productPage - 1) * ADMIN_PAGE_SIZE, productPage * ADMIN_PAGE_SIZE);
+
+  // Reset pages when filters change
+  const orderFilterKey   = `${orderSearch}|${orderStatus}`;
+  const productFilterKey = `${productSearch}|${productCat}|${productStock}`;
+  const [prevOrderFilter,   setPrevOrderFilter]   = useState(orderFilterKey);
+  const [prevProductFilter, setPrevProductFilter] = useState(productFilterKey);
+  if (orderFilterKey   !== prevOrderFilter)   { setPrevOrderFilter(orderFilterKey);     setOrderPage(1);   }
+  if (productFilterKey !== prevProductFilter) { setPrevProductFilter(productFilterKey); setProductPage(1); }
+
   /* derived */
   const revenue = orders.filter(o => o.status === 'delivered').reduce((s, o) => s + (o.totalAmount || 0), 0);
   const pending = orders.filter(o => o.status === 'pending').length;
@@ -524,7 +558,7 @@ export default function AdminPage() {
                       {['ID', 'Customer', 'Email', 'Items', 'Total', 'Status', 'Details', 'Change Status'].map(h => <Th key={h}>{h}</Th>)}
                     </tr></thead>
                     <tbody>
-                      {filteredOrders.map(o => (
+                      {pagedOrders.map(o => (
                         <tr key={o._id} className="border-b hover:bg-purple-500/5 transition-colors" style={{ borderColor: 'var(--border)' }}>
                           <Td style={{ color: 'var(--text-muted)' }}>#{o._id.slice(0, 8)}</Td>
                           <Td style={{ color: 'var(--text-primary)' }}>{o.customer?.fullname}</Td>
@@ -548,6 +582,7 @@ export default function AdminPage() {
                   </table>
                   {filteredOrders.length === 0 && <p className="text-center py-12 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>{orders.length === 0 ? 'No orders yet' : 'No results match your filters'}</p>}
                 </div>
+                <Pager page={orderPage} totalPages={orderTotalPages} onChange={setOrderPage} />
               </div>
             </motion.div>
           )}
@@ -564,6 +599,7 @@ export default function AdminPage() {
               />
               <div className="flex items-center justify-between mb-3">
                 <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>{filteredProducts.length} / {products.length} products</p>
+
                 <button onClick={openCreate} disabled={actionBusy} className="btn-primary text-xs px-4 py-2 flex items-center gap-2 disabled:opacity-50">
                   <Plus size={13} /> Add Product
                 </button>
@@ -575,7 +611,7 @@ export default function AdminPage() {
                       {['Product', 'Category', 'Brand', 'Variants', 'Min Price', 'Featured', 'Stock', 'Actions'].map(h => <Th key={h}>{h}</Th>)}
                     </tr></thead>
                     <tbody>
-                      {filteredProducts.map(p => {
+                      {pagedProducts.map(p => {
                         const minPrice = p.variants?.length ? Math.min(...p.variants.map(v => v.price)) : 0;
                         const totalStock = p.variants?.reduce((s, v) => s + v.stock, 0) || 0;
                         return (
@@ -606,6 +642,7 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
+                <Pager page={productPage} totalPages={productTotalPages} onChange={setProductPage} />
               </div>
             </motion.div>
           )}

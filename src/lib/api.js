@@ -195,4 +195,12 @@ export const subscriberApi = {
   getAll:     ()           => api.get('/subscriber'),
 };
 
+export const uploadApi = {
+  image: (file) => {
+    const form = new FormData();
+    form.append("file", file);
+    return api.post("/upload", form, { headers: { "Content-Type": "multipart/form-data" } });
+  },
+};
+
 export default api;
