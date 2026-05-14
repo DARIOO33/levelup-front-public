@@ -106,15 +106,19 @@ function generateProductSchema(product, urlSeg, reviews = []) {
           '@type': 'OfferShippingDetails',
           shippingRate: {
             '@type': 'MonetaryAmount',
-            value: product.freeShipping ? 0 : 5,
+            value: 0, // ✅ Free shipping
             currency: 'TND',
           },
           deliveryTime: {
             '@type': 'ShippingDeliveryTime',
-            handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 2, unitCode: 'DAY' },
-            transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 3, unitCode: 'DAY' },
+            handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+            transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 2, unitCode: 'DAY' },
           },
-        },
+          shippingDestination: {
+            '@type': 'DefinedRegion',
+            addressCountry: 'TN', // ✅ Tunisia only
+          },
+        }
       })),
     }),
 
@@ -145,6 +149,23 @@ function generateProductSchema(product, urlSeg, reviews = []) {
 function generateFAQSchema(product) {
   const questions = [];
 
+  questions.push({
+    '@type': 'Question',
+    name: 'Do you offer free shipping in Tunisia?',
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: 'Yes! We offer FREE shipping to all cities in Tunisia. Delivery takes 24-48 hours depending on your location.',
+    },
+  });
+
+  questions.push({
+    '@type': 'Question',
+    name: `How long does delivery take for ${product.name}?`,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: `Once ordered, ${product.name} ships within 24 hours and delivers to your door in 24-48 hours across Tunisia. Free shipping included!`,
+    },
+  });
   if (product.brand) {
     questions.push({
       '@type': 'Question',
@@ -228,10 +249,13 @@ export async function generateMetadata({ params }) {
       .join(', ')
     : '';
 
+  // In generateMetadata description section:
   const description = [
     `Buy ${product.name} ${product.brand ? `by ${product.brand}` : ''} in Tunisia.`,
     minPrice ? `Best price: ${minPrice} TND.` : '',
-    inStock ? '✓ In stock ✓ Fast delivery ✓ Warranty included' : 'Notify me when back in stock',
+    '✅ FREE shipping 🇹🇳',
+    '🚚 Delivery in 24-48h across Tunisia',
+    inStock ? '✓ In stock ✓ Warranty included' : 'Notify me when back in stock',
     specHighlights ? `Key specs: ${specHighlights}.` : '',
     'Shop the best IEMs, headphones, and audio gear at Level Up TN.',
   ]
@@ -239,6 +263,7 @@ export async function generateMetadata({ params }) {
     .join(' ')
     .slice(0, 320);
 
+  // In generateMetadata keywords section:
   const keywords = [
     product.name,
     product.brand,
@@ -249,6 +274,12 @@ export async function generateMetadata({ params }) {
     `best ${product.category || 'IEM'} under ${minPrice} TND`,
     `${product.name} specifications`,
     `level up tn ${product.name}`,
+    // Add IEM-specific keywords
+    'IEM Tunisia',
+    'ear monitors Tunisia',
+    'audiophile Tunisia',
+    'balanced armature IEM',
+    'hybrid IEM Tunisia',
     ...(product.tags || []),
   ].filter(Boolean);
 
@@ -267,28 +298,23 @@ export async function generateMetadata({ params }) {
         'max-snippet': -1,
       },
     },
+    // In openGraph section:
     openGraph: {
       title: pageTitle,
-      description,
+      description: `${description.slice(0, 150)}... 🚚 FREE shipping Tunisia | 24-48h delivery`,
       url: `${SITE_URL}/product/${urlSeg}`,
-      siteName: 'Level Up TN',
+      siteName: 'Level Up TN - IEMs & Audio Gear Tunisia',
       type: 'website',
       locale: 'en_TN',
       alternateLocale: ['fr_TN'],
-      images: image ? [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: `${product.name} - Level Up TN`,
-          type: 'image/jpeg',
-        }
-      ] : [],
+      // Add delivery promise to OG description
+      'product:availability': inStock ? 'in stock' : 'out of stock',
+      'product:condition': 'new',
       'product:price:amount': minPrice?.toString(),
       'product:price:currency': 'TND',
-      'product:availability': inStock ? 'in stock' : 'out of stock',
-      'product:brand': product.brand,
-      'product:retailer_item_id': product.sku,
+      // ✅ Add shipping info
+      'product:shipping:cost': '0',
+      'product:shipping:country': 'TN',
     },
     twitter: {
       card: 'summary_large_image',
