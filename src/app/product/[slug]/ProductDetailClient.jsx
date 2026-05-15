@@ -242,7 +242,7 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
               <motion.div key={activeImage} initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 className="relative aspect-square overflow-hidden card-glass" style={{ borderRadius: '4px' }}>
                 {allImages[activeImage]
-                  ? <Image src={allImages[activeImage]} alt={product.name} fill className="object-cover" sizes="(max-width:1024px) 100vw,50vw" />
+                  ? <Image src={allImages[activeImage]} alt={product.name} fill className="object-cover" sizes="(max-width:1024px) 100vw,50vw" priority />
                   : <div className="w-full h-full flex items-center justify-center text-8xl opacity-10">🎧</div>}
               </motion.div>
               {allImages.length > 1 && (
@@ -268,7 +268,7 @@ export default function ProductDetailClient({ routeSlug, initialProduct }) {
                   <button key={i} onClick={() => setActiveImage(i)}
                     className="relative flex-shrink-0 w-16 h-16 overflow-hidden border-2 transition-all"
                     style={{ borderRadius: '2px', borderColor: i === activeImage ? 'var(--purple)' : 'var(--border)' }}>
-                    <Image src={img} alt="" fill className="object-cover" sizes="64px" />
+                    <Image src={img} alt="" fill className="object-cover" sizes="64px" loading="lazy" />
                   </button>
                 ))}
               </div>

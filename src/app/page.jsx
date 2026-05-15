@@ -83,10 +83,10 @@ export default function HomePage() {
   useEffect(() => {
     productsApi.getAll()
       .then(r => setProducts(r.data.products?.filter(p => p.featured === true) || []))
-      .catch(() => {});
+      .catch(() => { });
     reviewsApi.getApproved()
       .then(r => setReviews(r.data.reviews?.slice(0, 8) || []))
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   return (

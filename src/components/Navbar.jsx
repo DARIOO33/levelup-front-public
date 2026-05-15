@@ -191,6 +191,8 @@ export default function Navbar() {
   const dark = resolvedTheme === 'dark';
   const isAdmin = user?.role === 'admin' || user?.role === 'owner';
 
+  const toggleTheme = () => setTheme(dark ? 'light' : 'dark');
+
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 20);
@@ -310,7 +312,7 @@ export default function Navbar() {
           </button>
 
           {mounted && (
-            <button onClick={() => setTheme(dark ? 'light' : 'dark')}
+            <button onClick={() => toggleTheme()}
               className="p-2 rounded transition-colors hover:text-purple-500"
               style={{ color: 'var(--text-muted)' }}>
               {dark ? <Sun size={16} /> : <Moon size={16} />}
@@ -446,7 +448,7 @@ export default function Navbar() {
                   <span suppressHydrationWarning>{mounted ? i18n.language?.toUpperCase() : 'EN'}</span>
                 </button>
                 {mounted && (
-                  <button onClick={() => setTheme(dark ? 'light' : 'dark')} className="flex items-center gap-1.5 text-xs py-1.5" style={{ color: 'var(--text-muted)' }}>
+                  <button onClick={() => toggleTheme()} className="flex items-center gap-1.5 text-xs py-1.5" style={{ color: 'var(--text-muted)' }}>
                     {dark ? <Sun size={14} /> : <Moon size={14} />}
                     <span className="font-mono">{dark ? 'Light' : 'Dark'}</span>
                   </button>

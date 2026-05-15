@@ -39,7 +39,6 @@
     background-color: var(--bg-primary);
     color: var(--text-primary);
     font-family: var(--font-dm-sans), sans-serif;
-    transition: background-color 0.3s ease, color 0.3s ease;
     overflow-x: hidden;
     cursor: none;
   }
@@ -398,6 +397,7 @@
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
 }
+
 
 /* ── Respect reduced-motion ── */
 @media (prefers-reduced-motion: reduce) {
