@@ -127,6 +127,7 @@ export default function Footer() {
               {[
                 { href: '/about', label: t('footer.about') },
                 { href: '/contact', label: t('footer.contact') },
+                { href: '/return-policy', label: 'Return Policy' },
                 { href: '#', label: t('footer.privacy') },
                 { href: '#', label: t('footer.terms') },
               ].map(({ href, label }) => (
