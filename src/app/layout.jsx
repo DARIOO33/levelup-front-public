@@ -38,6 +38,9 @@ export const metadata = {
     default: `${SITE_NAME} — Premium IEMs & Earphones in Tunisia`,
     template: `%s | ${SITE_NAME}`,
   },
+  verification: {
+    google: "_6INVRZh_tbAsOFcmcqt4X7TJnIknE2SqEd74-nHTEc",
+  },
   description:
     "Level Up TN is Tunisia's premier store for premium In-Ear Monitors (IEMs), earphones, and audio accessories. Shop KZ, CCA, TRN, Moondrop, 7Hz, Kinera, and more — fast delivery across Tunisia.",
   keywords: [
