@@ -103,6 +103,10 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority: 0.5,
     },
+    // Brand landing pages — indexable, no query params
+    { url: `${SITE_URL}/brands/kz`, lastModified: '2025-02-01', changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${SITE_URL}/brands/moondrop`, lastModified: '2025-02-01', changeFrequency: 'weekly', priority: 0.85 },
+    { url: `${SITE_URL}/brands/7hz`, lastModified: '2025-02-01', changeFrequency: 'weekly', priority: 0.85 },
   ];
 
   // ❌ REMOVED: All parameter URLs (?cat=, ?brand=)

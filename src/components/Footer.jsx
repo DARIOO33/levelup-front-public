@@ -83,12 +83,35 @@ export default function Footer() {
               {t('footer.shop')}
             </h4>
             <ul className="space-y-3">
-              {['IEMs', 'New Arrivals', 'Best Sellers', 'Sale'].map(item => (
-                <li key={item}>
-                  <Link href="/shop"
+              {[
+                { href: '/shop?cat=iems', label: 'IEMs' },
+                { href: '/shop', label: 'New Arrivals' },
+                { href: '/shop', label: 'Best Sellers' },
+                { href: '/shop?cat=accessories', label: 'Accessories' },
+              ].map(({ href, label }) => (
+                <li key={label}>
+                  <Link href={href}
                     className="text-sm transition-all duration-200 hover:text-purple-400 hover:translate-x-1 inline-block"
                     style={{ color: 'var(--text-muted)' }}>
-                    {item}
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h4 className="font-mono text-xs font-semibold uppercase tracking-widest mt-7 mb-4 text-purple-500">
+              Brands
+            </h4>
+            <ul className="space-y-3">
+              {[
+                { href: '/brands/kz', label: 'KZ' },
+                // { href: '/brands/moondrop', label: 'Moondrop' },
+                { href: '/brands/7hz', label: '7Hz' },
+              ].map(({ href, label }) => (
+                <li key={label}>
+                  <Link href={href}
+                    className="text-sm transition-all duration-200 hover:text-purple-400 hover:translate-x-1 inline-block"
+                    style={{ color: 'var(--text-muted)' }}>
+                    {label}
                   </Link>
                 </li>
               ))}
