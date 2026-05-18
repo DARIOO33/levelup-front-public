@@ -1,4 +1,4 @@
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://levelup-store.tn';
 
 export const metadata = {
   title: 'Return Policy — IEM Returns & Refunds in Tunisia | Level Up TN',
