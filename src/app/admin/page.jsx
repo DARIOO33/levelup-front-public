@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import {
   LayoutDashboard, Package, ShoppingBag, Activity, Star, Users,
   Check, X, DollarSign, Clock, Trash2, Plus, Pencil, Copy, Loader2,
-  Eye, Search, Filter, Mail, Send, ChevronDown, Tag, MessageSquare, CheckCheck,
+  Eye, EyeOff, Search, Filter, Mail, Send, ChevronDown, Tag, MessageSquare, CheckCheck,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ordersApi, productsApi, reviewsApi, activityApi, usersApi, marketingApi, couponApi, contactApi } from '@/lib/api';
@@ -221,6 +221,7 @@ export default function AdminPage() {
 
   /* ui */
   const [active, setActive] = useState('overview');
+  const [revenueVisible, setRevenueVisible] = useState(false);
   const [modal, setModal] = useState(null);
   const [confirm, setConfirm] = useState(null);
   const [orderDetail, setOrderDetail] = useState(null);
@@ -496,18 +497,40 @@ export default function AdminPage() {
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 {[
                   { label: 'Total Orders', value: orders.length, icon: ShoppingBag, color: '#7c3aff' },
-                  { label: 'Revenue (TND)', value: revenue.toFixed(0) - (deliveredOrders.length * 9 + cancelledOrdersList.length * 5), icon: DollarSign, color: '#22c55e' },
+                  { label: 'Revenue (TND)', value: revenue.toFixed(0) - (deliveredOrders.length * 9 + cancelledOrdersList.length * 5), icon: DollarSign, color: '#22c55e', hideable: true },
                   { label: 'Pending', value: pending, icon: Clock, color: '#f59e0b' },
                   { label: 'Products', value: products.length, icon: Package, color: '#3b82f6' },
-                ].map(({ label, value, icon: Icon, color }) => (
+                ].map(({ label, value, icon: Icon, color, hideable }) => (
                   <div key={label} className="card-glass p-5">
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="text-[10px] font-mono uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>{label}</p>
-                        <p className="font-display text-4xl mt-1 tracking-wide" style={{ color: 'var(--text-primary)' }}>{value}</p>
+                        <p
+                          className="font-display text-4xl mt-1 tracking-wide"
+                          style={{
+                            color: 'var(--text-primary)',
+                            filter: hideable && !revenueVisible ? 'blur(7px)' : 'none',
+                            transition: 'filter 0.25s',
+                            userSelect: hideable && !revenueVisible ? 'none' : 'auto',
+                          }}
+                        >{value}</p>
                       </div>
-                      <div className="w-8 h-8 flex items-center justify-center" style={{ background: `${color}20`, borderRadius: '4px' }}>
-                        <Icon size={16} style={{ color }} />
+                      <div className="flex flex-col items-center gap-1.5">
+                        <div className="w-8 h-8 flex items-center justify-center" style={{ background: `${color}20`, borderRadius: '4px' }}>
+                          <Icon size={16} style={{ color }} />
+                        </div>
+                        {hideable && (
+                          <button
+                            onClick={() => setRevenueVisible(v => !v)}
+                            title={revenueVisible ? 'Hide revenue' : 'Show revenue'}
+                            className="p-1 rounded transition-colors"
+                            style={{ color: 'var(--text-muted)' }}
+                            onMouseEnter={e => { e.currentTarget.style.color = '#22c55e'; }}
+                            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                          >
+                            {revenueVisible ? <EyeOff size={13} /> : <Eye size={13} />}
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
