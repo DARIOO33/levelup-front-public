@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { CheckCircle, ArrowLeft, Package, ChevronLeft, MailCheck, MapPin, ChevronDown, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ordersApi, couponApi, addressesApi } from '@/lib/api';
-import { useCartStore, useAuthStore } from '@/store';
+import { useCartStore, useAuthStore, useSettingsStore } from '@/store';
+import { PackageX } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
 import { useMemo } from 'react';
@@ -84,6 +85,7 @@ export default function CheckoutPage() {
   const { t } = useTranslation();
   const { items, clear } = useCartStore();
   const { user } = useAuthStore();
+  const { deliveryPaused, deliveryNotice } = useSettingsStore();
 
   const [form, setForm] = useState({ fullname: '', email: '', phone: '', address: '' });
 
@@ -274,6 +276,10 @@ export default function CheckoutPage() {
 
   // Step 1: place order
   const handleSubmit = async () => {
+    if (deliveryPaused) {
+      toast.error(deliveryNotice || 'Delivery is temporarily paused. Orders are not available right now.');
+      return;
+    }
     if (!validate()) return;
     setLoading(true);
     try {
@@ -717,8 +723,17 @@ export default function CheckoutPage() {
                         <span className="font-mono" style={{ color: 'var(--purple)' }}>{finalTotal.toFixed(2)} TND</span>
                       </div>
                     </div>
-                    <button onClick={handleSubmit} disabled={loading}
-                      className="btn-primary w-full mt-5 py-4 text-sm flex items-center justify-center gap-2 disabled:opacity-60">
+                    {deliveryPaused && (
+                      <div
+                        className="flex items-center gap-2 mt-5 px-4 py-2.5 text-xs font-mono"
+                        style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '2px', color: '#f59e0b' }}
+                      >
+                        <PackageX size={13} className="flex-shrink-0" />
+                        <span>{deliveryNotice || 'Delivery is temporarily paused. Orders are not available right now.'}</span>
+                      </div>
+                    )}
+                    <button onClick={handleSubmit} disabled={loading || deliveryPaused}
+                      className="btn-primary w-full mt-5 py-4 text-sm flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
                       {loading && <div className="spinner !w-4 !h-4" />}
                       {loading ? t('checkout.placing') : (user ? t('checkout.place_order') : 'Continue & Verify Email')}
                     </button>

@@ -76,16 +76,26 @@ function FadeUp({ children, delay = 0, className = '' }) {
 export default function HomePage() {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
+  const [totalProductCount, setTotalProductCount] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [totalReviewCount, setTotalReviewCount] = useState(0);
 
   const features = t('home.features', { returnObjects: true });
 
   useEffect(() => {
     productsApi.getAll()
-      .then(r => setProducts(r.data.products?.filter(p => p.featured === true) || []))
+      .then(r => {
+        const all = r.data.products || [];
+        setTotalProductCount(all.length);
+        setProducts(all.filter(p => p.featured === true));
+      })
       .catch(() => { });
     reviewsApi.getApproved()
-      .then(r => setReviews(r.data.reviews?.slice(0, 8) || []))
+      .then(r => {
+        const all = r.data.reviews || [];
+        setTotalReviewCount(all.length);
+        setReviews(all.slice(0, 8));
+      })
       .catch(() => { });
   }, []);
 
@@ -197,9 +207,9 @@ export default function HomePage() {
             className="mt-20 grid grid-cols-3 gap-8 max-w-sm mx-auto"
           >
             {[
-              { num: products.length || 12, suf: '+', label: t('hero.stat_products') },
+              { num: totalProductCount, suf: '+', label: t('hero.stat_products') },
               { num: 4, suf: '', label: t('hero.stat_drivers') },
-              { num: 10, suf: '+', label: t('hero.stat_reviews') },
+              { num: totalReviewCount, suf: '+', label: t('hero.stat_reviews') },
             ].map(({ num, suf, label }) => (
               <div key={label} className="text-center">
                 <p className="font-display text-4xl md:text-5xl text-gradient">

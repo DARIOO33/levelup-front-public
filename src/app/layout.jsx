@@ -5,6 +5,8 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import I18nProvider from '@/components/I18nProvider';
 import AuthInit from '@/components/AuthInit';
+import SettingsInit from '@/components/SettingsInit';
+import DeliveryNoticeBanner from '@/components/DeliveryNoticeBanner';
 import CursorEffect from '@/components/CursorEffect';
 import ScrollProgress from '@/components/ScrollProgress';
 import BackToTop from '@/components/BackToTop';
@@ -144,8 +146,10 @@ export default function RootLayout({ children }) {
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <I18nProvider>
             <AuthInit />
+            <SettingsInit />
             <CursorEffect />
             <ScrollProgress />
+            <DeliveryNoticeBanner />
             <Navbar />
             <main className="mt-8">{children}</main>
             <Footer />

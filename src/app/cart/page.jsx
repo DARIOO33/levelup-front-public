@@ -4,13 +4,15 @@ import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useCartStore, useAuthStore } from '@/store';
+import { useCartStore, useAuthStore, useSettingsStore } from '@/store';
 import GuestAccountBanner from '@/components/GuestAccountBanner';
+import { PackageX } from 'lucide-react';
 
 export default function CartPage() {
   const { t } = useTranslation();
   const { items, removeItem, updateQty } = useCartStore();
   const { user } = useAuthStore();
+  const { deliveryPaused } = useSettingsStore();
   const total = items.reduce((s, i) => s + i.price * i.quantity, 0);
 
   return (
@@ -80,9 +82,24 @@ export default function CartPage() {
                     <span className="font-mono text-base" style={{ color: 'var(--purple)' }}>{total.toFixed(2)} TND</span>
                   </div>
                 </div>
-                <Link href="/checkout" className="btn-primary w-full mt-6 flex items-center justify-center gap-2 text-sm py-4">
-                  {t('cart.checkout')} <ArrowRight size={15} />
-                </Link>
+                {deliveryPaused ? (
+                  <div className="mt-6 space-y-2">
+                    <div
+                      className="flex items-center gap-2 px-4 py-2.5 text-xs font-mono"
+                      style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '2px', color: '#f59e0b' }}
+                    >
+                      <PackageX size={13} className="flex-shrink-0" />
+                      <span>Delivery is currently paused — checkout unavailable</span>
+                    </div>
+                    <button disabled className="btn-primary w-full flex items-center justify-center gap-2 text-sm py-4 opacity-40 cursor-not-allowed">
+                      {t('cart.checkout')} <ArrowRight size={15} />
+                    </button>
+                  </div>
+                ) : (
+                  <Link href="/checkout" className="btn-primary w-full mt-6 flex items-center justify-center gap-2 text-sm py-4">
+                    {t('cart.checkout')} <ArrowRight size={15} />
+                  </Link>
+                )}
               </div>
             </div>
           </div>

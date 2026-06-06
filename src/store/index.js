@@ -1,7 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { authApi, usersApi, resetRefreshState } from '@/lib/api';
+import { authApi, usersApi, resetRefreshState, settingsApi } from '@/lib/api';
 
 // ── Auth Store ──────────────────────────────────────────────────────────────
 export const useAuthStore = create((set, get) => ({
@@ -69,6 +69,27 @@ export const useAuthStore = create((set, get) => ({
   logout: async () => {
     try { await authApi.logout(); } catch {}
     set({ user: null });
+  },
+}));
+
+// ── Settings Store ──────────────────────────────────────────────────────────
+export const useSettingsStore = create((set, get) => ({
+  deliveryPaused: false,
+  deliveryNotice: '',
+  initialized: false,
+
+  init: async () => {
+    if (get().initialized) return;
+    try {
+      const { data } = await settingsApi.get();
+      set({
+        deliveryPaused: data.settings?.deliveryPaused ?? false,
+        deliveryNotice: data.settings?.deliveryNotice ?? '',
+        initialized: true,
+      });
+    } catch {
+      set({ initialized: true });
+    }
   },
 }));
 

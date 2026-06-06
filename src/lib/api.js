@@ -195,6 +195,11 @@ export const subscriberApi = {
   getAll:     ()           => api.get('/subscriber'),
 };
 
+export const settingsApi = {
+  get:    ()     => api.get('/settings'),
+  update: (data) => api.patch('/settings', data),
+};
+
 export const uploadApi = {
   image: (file) => {
     const form = new FormData();

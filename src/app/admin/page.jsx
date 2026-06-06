@@ -6,9 +6,10 @@ import {
   LayoutDashboard, Package, ShoppingBag, Activity, Star, Users,
   Check, X, DollarSign, Clock, Trash2, Plus, Pencil, Copy, Loader2,
   Eye, EyeOff, Search, Filter, Mail, Send, ChevronDown, Tag, MessageSquare, CheckCheck,
+  Settings, GripVertical, PackageX,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ordersApi, productsApi, reviewsApi, activityApi, usersApi, marketingApi, couponApi, contactApi } from '@/lib/api';
+import { ordersApi, productsApi, reviewsApi, activityApi, usersApi, marketingApi, couponApi, contactApi, settingsApi } from '@/lib/api';
 import { useAuthStore } from '@/store';
 import toast from 'react-hot-toast';
 import ProductModal from '@/components/admin/ProductModal';
@@ -30,6 +31,7 @@ const TABS = [
   { id: 'marketing', label: 'Marketing', icon: Mail },
   { id: 'coupons', label: 'Coupons', icon: Tag },
   { id: 'messages', label: 'Messages', icon: MessageSquare },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 /* ── shared primitives ──────────────────────────────────────────────────────── */
@@ -260,6 +262,14 @@ export default function AdminPage() {
   const [messages, setMessages] = useState([]);
   const [messagesLoaded, setMessagesLoaded] = useState(false);
 
+  /* settings */
+  const [settingsBrands, setSettingsBrands] = useState([]);
+  const [settingsDeliveryPaused, setSettingsDeliveryPaused] = useState(false);
+  const [settingsDeliveryNotice, setSettingsDeliveryNotice] = useState('');
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [newBrand, setNewBrand] = useState('');
+  const [settingsSaving, setSettingsSaving] = useState(false);
+
   /* marketing */
   const [campaign, setCampaign] = useState({ subject: '', headline: '', body: '', ctaLabel: 'SHOP NOW', ctaUrl: '', productImageUrl: '', targetGroup: 'all' });
   const [audience, setAudience] = useState(null);
@@ -289,6 +299,15 @@ export default function AdminPage() {
     }
     if (active === 'messages' && !messagesLoaded) {
       contactApi.getAll().then(r => { setMessages(r.data.messages || []); setMessagesLoaded(true); }).catch(() => { });
+    }
+    if (active === 'settings' && !settingsLoaded) {
+      settingsApi.get().then(r => {
+        const s = r.data.settings || {};
+        setSettingsBrands(s.brands || []);
+        setSettingsDeliveryPaused(s.deliveryPaused ?? false);
+        setSettingsDeliveryNotice(s.deliveryNotice ?? '');
+        setSettingsLoaded(true);
+      }).catch(() => { });
     }
   }, [active]);
 
@@ -381,6 +400,37 @@ export default function AdminPage() {
     setCoupons(prev => prev.filter(c => c._id !== id));
     toast.success('Coupon deleted');
   }).catch(() => toast.error('Failed'));
+
+  /* settings handlers */
+  const addBrand = () => {
+    const trimmed = newBrand.trim();
+    if (!trimmed) return;
+    if (settingsBrands.includes(trimmed)) { toast.error('Brand already in the list'); return; }
+    setSettingsBrands(prev => [...prev, trimmed]);
+    setNewBrand('');
+  };
+  const removeBrand = (i) => setSettingsBrands(prev => prev.filter((_, idx) => idx !== i));
+  const moveBrand = (i, dir) => {
+    const next = i + dir;
+    if (next < 0 || next >= settingsBrands.length) return;
+    setSettingsBrands(prev => {
+      const arr = [...prev];
+      [arr[i], arr[next]] = [arr[next], arr[i]];
+      return arr;
+    });
+  };
+  const saveSettings = async () => {
+    setSettingsSaving(true);
+    try {
+      await settingsApi.update({
+        brands: settingsBrands,
+        deliveryPaused: settingsDeliveryPaused,
+        deliveryNotice: settingsDeliveryNotice,
+      });
+      toast.success('Settings saved');
+    } catch { toast.error('Failed to save settings'); }
+    finally { setSettingsSaving(false); }
+  };
 
   /* messages handlers */
   const markMessageRead = (id) => withLock(async () => {
@@ -1051,6 +1101,211 @@ export default function AdminPage() {
                   </div>
                 ))}
                 {messages.length === 0 && <p className="text-center py-12 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>No messages yet</p>}
+              </div>
+            </motion.div>
+          )}
+
+          {/* ══ SETTINGS ══ */}
+          {active === 'settings' && (
+            <motion.div key="settings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <div className="max-w-2xl">
+                <div className="card-glass overflow-hidden" style={{ borderTop: '2px solid var(--purple)' }}>
+                  <div className="px-6 py-5 border-b flex items-center gap-3" style={{ borderColor: 'var(--border)' }}>
+                    <Settings size={15} className="text-purple-400" />
+                    <div>
+                      <p className="font-display text-xl tracking-wider" style={{ color: 'var(--text-primary)' }}>Brand Ticker</p>
+                      <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
+                        {settingsBrands.length} brand{settingsBrands.length !== 1 ? 's' : ''} — shown on the homepage scrolling ticker
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Brand list */}
+                  <div className="px-6 py-4">
+                    {!settingsLoaded ? (
+                      <div className="flex items-center justify-center py-10">
+                        <Loader2 size={18} className="text-purple-400 animate-spin" />
+                      </div>
+                    ) : settingsBrands.length === 0 ? (
+                      <p className="text-center py-8 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>No brands yet — add one below</p>
+                    ) : (
+                      <div className="space-y-1.5 mb-4">
+                        {settingsBrands.map((brand, i) => (
+                          <div key={i} className="flex items-center gap-2 group">
+                            {/* reorder */}
+                            <div className="flex flex-col gap-0.5">
+                              <button
+                                onClick={() => moveBrand(i, -1)}
+                                disabled={i === 0}
+                                className="p-0.5 rounded transition-colors disabled:opacity-20"
+                                style={{ color: 'var(--text-muted)' }}
+                                onMouseEnter={e => { if (i > 0) e.currentTarget.style.color = 'var(--purple)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                              >
+                                <ChevronDown size={11} style={{ transform: 'rotate(180deg)' }} />
+                              </button>
+                              <button
+                                onClick={() => moveBrand(i, 1)}
+                                disabled={i === settingsBrands.length - 1}
+                                className="p-0.5 rounded transition-colors disabled:opacity-20"
+                                style={{ color: 'var(--text-muted)' }}
+                                onMouseEnter={e => { if (i < settingsBrands.length - 1) e.currentTarget.style.color = 'var(--purple)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                              >
+                                <ChevronDown size={11} />
+                              </button>
+                            </div>
+
+                            {/* drag grip (visual) */}
+                            <GripVertical size={13} style={{ color: 'var(--border)' }} className="flex-shrink-0" />
+
+                            {/* brand name */}
+                            <span
+                              className="flex-1 text-sm font-mono px-3 py-1.5"
+                              style={{
+                                background: 'var(--bg-secondary)',
+                                border: '1px solid var(--border)',
+                                borderRadius: '2px',
+                                color: 'var(--text-primary)',
+                              }}
+                            >
+                              {brand}
+                            </span>
+
+                            {/* position badge */}
+                            <span className="text-[10px] font-mono w-6 text-center flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
+                              {i + 1}
+                            </span>
+
+                            {/* delete */}
+                            <button
+                              onClick={() => removeBrand(i)}
+                              className="p-1.5 rounded transition-colors flex-shrink-0"
+                              style={{ color: 'var(--text-muted)' }}
+                              onMouseEnter={e => { e.currentTarget.style.color = '#ef4444'; }}
+                              onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; }}
+                              title="Remove brand"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Add new brand */}
+                    <div className="flex gap-2 pt-3 border-t" style={{ borderColor: 'var(--border)' }}>
+                      <input
+                        value={newBrand}
+                        onChange={e => setNewBrand(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && addBrand()}
+                        placeholder="Brand name (e.g. Truthear)…"
+                        className="input-field flex-1 text-xs"
+                      />
+                      <button
+                        onClick={addBrand}
+                        disabled={!newBrand.trim()}
+                        className="btn-primary text-xs px-4 py-2 flex items-center gap-1.5 disabled:opacity-50"
+                      >
+                        <Plus size={13} /> Add
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Save footer — brands card */}
+                  <div className="px-6 py-4 border-t" style={{ borderColor: 'var(--border)' }}>
+                    <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
+                      Changes are applied to the homepage ticker immediately after saving.
+                    </p>
+                  </div>
+                </div>
+
+                {/* ── Delivery Control card ── */}
+                <div className="card-glass overflow-hidden mt-5" style={{ borderTop: `2px solid ${settingsDeliveryPaused ? '#f59e0b' : 'var(--border)'}` }}>
+                  <div className="px-6 py-5 border-b flex items-center gap-3" style={{ borderColor: 'var(--border)' }}>
+                    <PackageX size={15} style={{ color: settingsDeliveryPaused ? '#f59e0b' : 'var(--text-muted)' }} />
+                    <div>
+                      <p className="font-display text-xl tracking-wider" style={{ color: 'var(--text-primary)' }}>Delivery Control</p>
+                      <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
+                        Pause deliveries site-wide — checkout is disabled while OFF
+                      </p>
+                    </div>
+                    {/* Live status badge */}
+                    <span
+                      className="ml-auto text-[10px] font-mono px-2.5 py-1 flex-shrink-0"
+                      style={{
+                        borderRadius: '2px',
+                        background: settingsDeliveryPaused ? 'rgba(245,158,11,0.12)' : 'rgba(34,197,94,0.1)',
+                        color: settingsDeliveryPaused ? '#f59e0b' : '#22c55e',
+                        border: `1px solid ${settingsDeliveryPaused ? 'rgba(245,158,11,0.3)' : 'rgba(34,197,94,0.25)'}`,
+                      }}
+                    >
+                      {settingsDeliveryPaused ? '● PAUSED' : '● ACTIVE'}
+                    </span>
+                  </div>
+
+                  <div className="px-6 py-5 space-y-5">
+                    {/* Toggle row */}
+                    <div className="flex items-center justify-between gap-4">
+                      <div>
+                        <p className="text-sm font-mono" style={{ color: 'var(--text-primary)' }}>Pause Deliveries</p>
+                        <p className="text-[10px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                          When ON — checkout is blocked and a notice banner appears across the site
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setSettingsDeliveryPaused(v => !v)}
+                        className="relative w-12 h-6 flex-shrink-0 transition-all duration-300"
+                        style={{
+                          borderRadius: '999px',
+                          background: settingsDeliveryPaused ? '#f59e0b' : 'var(--bg-secondary)',
+                          border: `1px solid ${settingsDeliveryPaused ? '#f59e0b' : 'var(--border)'}`,
+                        }}
+                      >
+                        <span
+                          className="absolute top-0.5 w-5 h-5 bg-white transition-all duration-300"
+                          style={{
+                            borderRadius: '999px',
+                            left: settingsDeliveryPaused ? 'calc(100% - 22px)' : '2px',
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                          }}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Notice message */}
+                    <div>
+                      <label className="block text-[10px] font-mono uppercase tracking-widest mb-1.5" style={{ color: 'var(--text-muted)' }}>
+                        Notice Message (shown to customers)
+                      </label>
+                      <textarea
+                        className="input-field text-xs resize-none w-full"
+                        rows={2}
+                        maxLength={300}
+                        placeholder="e.g. We're restocking — delivery will resume shortly. Thank you for your patience!"
+                        value={settingsDeliveryNotice}
+                        onChange={e => setSettingsDeliveryNotice(e.target.value)}
+                      />
+                      <p className="text-[10px] font-mono mt-1 text-right" style={{ color: 'var(--text-muted)' }}>
+                        {settingsDeliveryNotice.length}/300
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Shared save button ── */}
+                <div className="mt-5 flex items-center justify-between gap-4 px-1">
+                  <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>
+                    Saves brand ticker and delivery settings together.
+                  </p>
+                  <button
+                    onClick={saveSettings}
+                    disabled={settingsSaving || !settingsLoaded}
+                    className="btn-primary text-xs px-6 py-2.5 flex items-center gap-2 disabled:opacity-60 flex-shrink-0"
+                  >
+                    {settingsSaving ? <><Loader2 size={13} className="animate-spin" /> Saving…</> : 'Save Changes'}
+                  </button>
+                </div>
               </div>
             </motion.div>
           )}
