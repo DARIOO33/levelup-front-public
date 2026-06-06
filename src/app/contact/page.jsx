@@ -37,7 +37,7 @@ export default function ContactPage() {
   };
 
   const contactItems = [
-    { icon: Mail,   label: t('contact.email_label'),    value: 'contact@levelup.tn', href: 'mailto:contact@levelup.tn' },
+    { icon: Mail,   label: t('contact.email_label'),    value: 'levelup.store.tn@gmail.com', href: 'mailto:levelup.store.tn@gmail.com' },
     { icon: Phone,  label: t('contact.phone_label'),    value: '+216 12 345 678',     href: 'tel:+21612345678'          },
     { icon: MapPin, label: t('contact.location_label'), value: 'Tunis, Tunisia',       href: null                        },
   ];

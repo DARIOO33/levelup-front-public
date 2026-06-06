@@ -31,7 +31,7 @@ const jetbrains = JetBrains_Mono({
   display: 'swap',
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://levelup-store.tn';
 const SITE_NAME = 'Level Up TN';
 
 export const metadata = {

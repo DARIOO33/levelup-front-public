@@ -272,8 +272,8 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-1 text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
               <Mail size={11} />
-              <a href="mailto:contact@levelup.tn" className="hover:text-purple-400 transition-colors">
-                contact@levelup.tn
+              <a href="mailto:levelup.store.tn@gmail.com" className="hover:text-purple-400 transition-colors">
+                levelup.store.tn@gmail.com
               </a>
             </div>
           </div>

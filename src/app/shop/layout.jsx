@@ -1,6 +1,6 @@
 // Server component layout for /shop — adds SEO metadata without touching the client page
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://leveluptn.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://levelup-store.tn';
 
 export const metadata = {
   title: 'Shop IEMs & Audio Gear in Tunisia',
